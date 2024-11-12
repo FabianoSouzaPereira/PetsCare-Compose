@@ -26,6 +26,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -48,6 +49,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.fabianospdev.petscare.R
 import com.fabianospdev.petscare.montserratFamily
+import com.fabianospdev.petscare.presenter.ui.theme.PetsCareTheme
 
 @Composable
 fun LoginScreen(navController: NavHostController, name: String, context: Context?){
@@ -60,116 +62,119 @@ fun LoginScreen(navController: NavHostController, name: String, context: Context
 
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = Color.Black
+        color = Color.White
     ){
-            Column(
-                modifier = Modifier.fillMaxSize().padding(16.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ){
-                Image(
-                    painter = painterResource(id = R.mipmap.ic_launcher_foreground),
-                    contentDescription = "logo",
-                    modifier = Modifier.size(160.dp)
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                Text(
-                    text = "Login",
-                    fontSize = 22.sp,
-                    fontFamily = montserratFamily,
-                    fontWeight = FontWeight.Bold,
-                    style = TextStyle(color = Color.White),
-                )
-                Spacer(modifier = Modifier.height(3.dp))
-                TextField(
-                    value = username,
-                    modifier = Modifier.padding(20.dp, 20.dp, 20.dp, 1.dp),
-                    onValueChange = {
-                        username = it
-                        isUserNameEmpty = it.isEmpty()
-                    },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                    textStyle = TextStyle(color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Bold),
-                    shape = RoundedCornerShape(25),
-                    colors = TextFieldDefaults.colors(
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        errorIndicatorColor = Color.Transparent,
-                    ),
-                    placeholder = {
-                        Text(
-                            text = "email@email.com",
-                            modifier = Modifier.basicMarquee(),
-                            style = LocalTextStyle.current.copy(color = Color.Gray),
-                            fontSize = 16.sp,
-                            fontFamily = montserratFamily,
-                            fontWeight = FontWeight.Normal
-                        )
-                    },
-                )
-                Spacer(modifier = Modifier.height(3.dp))
-                TextField(
-                    value = password,
-                    onValueChange = { password = it },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                    textStyle = TextStyle(
-                        color = Color.White,
+        Column(
+            modifier = Modifier.fillMaxSize().padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ){
+            Image(
+                painter = painterResource(id = R.mipmap.ic_launcher_foreground),
+                contentDescription = "logo",
+                modifier = Modifier.size(160.dp)
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = "Login",
+                fontSize = 22.sp,
+                fontFamily = montserratFamily,
+                fontWeight = FontWeight.Bold,
+                style = TextStyle(color = Color.Black),
+            )
+            Spacer(modifier = Modifier.height(3.dp))
+            TextField(
+                value = username,
+                modifier = Modifier.padding(20.dp, 20.dp, 20.dp, 1.dp),
+                onValueChange = {
+                    username = it
+                    isUserNameEmpty = it.isEmpty()
+                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                textStyle = TextStyle(color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Bold),
+                shape = RoundedCornerShape(25),
+                colors = TextFieldDefaults.colors(
+                    focusedIndicatorColor = Color.Cyan,
+                    unfocusedIndicatorColor = Color.Cyan,
+                    errorIndicatorColor = Color.Red,
+                    unfocusedContainerColor = PetsCareTheme(lightColorScheme())
+                    focusedContainerColor = Color.LightGray,
+                ),
+                placeholder = {
+                    Text(
+                        text = "email@email.com",
+                        modifier = Modifier.basicMarquee(),
+                        style = LocalTextStyle.current.copy(color = Color.Gray),
                         fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        textDecoration = TextDecoration.None
-                    ),
-                    shape = RoundedCornerShape(25),
-                    colors = TextFieldDefaults.colors(
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        errorIndicatorColor = Color.Transparent,
-                    ),
-                    placeholder = {
-                        Text(
-                            text = "Q@nm#44u",
-                            fontSize = 16.sp,
-                            fontFamily = montserratFamily,
-                            fontWeight = FontWeight.Normal,
-                            color = Color.Gray
-                        )
-                    },
-                    leadingIcon = { Icon(imageVector = Icons.Default.CheckCircle, contentDescription = "emailIcon") },
-                    trailingIcon = {
-                        IconButton(onClick = { showPassword = !showPassword }) {
-                            val icon: ImageVector = if (showPassword) {
-                                ImageVector.vectorResource(R.drawable.baseline_visibility_off_24)
-                            } else {
-                                ImageVector.vectorResource(id = R.drawable.baseline_remove_red_eye_24)
-                            }
-                            Icon(
-                                imageVector = icon,
-                                contentDescription = if (showPassword) {
-                                    "Hide Password"
-                                } else {
-                                    "Show Password"
-                                },
-                                tint = Color.Gray
-                            )
+                        fontFamily = montserratFamily,
+                        fontWeight = FontWeight.Normal
+                    )
+                },
+            )
+            Spacer(modifier = Modifier.height(3.dp))
+            TextField(
+                value = password,
+                onValueChange = { password = it },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                textStyle = TextStyle(
+                    color = Color.Black,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    textDecoration = TextDecoration.None
+                ),
+                shape = RoundedCornerShape(25),
+                colors = TextFieldDefaults.colors(
+                    focusedIndicatorColor = Color.Cyan,
+                    unfocusedIndicatorColor = Color.Cyan,
+                    errorIndicatorColor = Color.Cyan,
+                ),
+                placeholder = {
+                    Text(
+                        text = "Q@nm#44u",
+                        fontSize = 16.sp,
+                        fontFamily = montserratFamily,
+                        fontWeight = FontWeight.Normal,
+                        color = Color.Gray
+                    )
+                },
+                leadingIcon = {
+                    Icon(imageVector = Icons.Default.CheckCircle, contentDescription = "emailIcon")
+                },
+                trailingIcon = {
+                    IconButton(onClick = { showPassword = !showPassword }) {
+                        val icon: ImageVector = if (showPassword) {
+                            ImageVector.vectorResource(R.drawable.baseline_visibility_off_24)
+                        } else {
+                            ImageVector.vectorResource(id = R.drawable.baseline_remove_red_eye_24)
                         }
-                    },
-                    modifier = Modifier.padding(end = 8.dp)
-                )
-                Spacer(modifier = Modifier.height(20.dp))
-                Button(
-                    onClick = { navController.navigate(route = "Home") },
-                    enabled = true,
-                    interactionSource = remember { MutableInteractionSource() },
-                    border = BorderStroke(1.dp, color = Color.Black),
-                    elevation = ButtonDefaults.buttonElevation(defaultElevation = 10.dp),
-                    shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.buttonColors(),
-                    contentPadding = ButtonDefaults.ContentPadding,
-                ) {
-                    Text(text = "Login")
-                }
+                        Icon(
+                            imageVector = icon,
+                            contentDescription = if (showPassword) {
+                                "Hide Password"
+                            } else {
+                                "Show Password"
+                            },
+                            tint = Color.Gray
+                        )
+                    }
+                },
+                modifier = Modifier.padding(end = 8.dp)
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+            Button(
+                onClick = { navController.navigate(route = "Home") },
+                enabled = true,
+                interactionSource = remember { MutableInteractionSource() },
+                border = BorderStroke(1.dp, color = Color.Black),
+                elevation = ButtonDefaults.buttonElevation(defaultElevation = 10.dp),
+                shape = MaterialTheme.shapes.large,
+                colors = ButtonDefaults.buttonColors(),
+                contentPadding = ButtonDefaults.ContentPadding,
+            ) {
+                Text(text = "Login")
             }
+        }
     }
-
 }
 
 @Preview(
