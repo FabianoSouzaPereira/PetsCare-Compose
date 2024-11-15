@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="button_border_size">2.dp</dimen>
+    <dimen name="button_rounded_corner_shape">16.dp</dimen>
+    <dimen name="button_padding">16.dp</dimen>
+    <dimen name="button_width_medium">200.dp</dimen>
+    <dimen name="textfield_border_size">2.dp</dimen>
+    <dimen name="textfield_rounded_corner_shape">16.dp</dimen>
+    <dimen name="title_font_text_size">26.sp</dimen>
+    <dimen name="minium_space_betwing_elements">3.dp</dimen>
+</resources>

@@ -22,12 +22,6 @@ import com.fabianospdev.petscare.presenter.ui.settings.SettingsScreen
 import com.fabianospdev.petscare.presenter.ui.theme.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
-val montserratFamily = FontFamily(
-    Font(R.font.montserrat_light, FontWeight.Light),
-    Font(R.font.montserrat_regular, FontWeight.Normal),
-    Font(R.font.montserrat_medium, FontWeight.Medium),
-    Font(R.font.montserrat_semibold, FontWeight.Bold)
-)
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -41,15 +35,15 @@ class MainActivity : ComponentActivity() {
             Surface(modifier = Modifier.fillMaxSize(), color = Color.Transparent, tonalElevation = 5.dp) {
                 AppTheme {
                     navController = rememberNavController()
-                    NavHost(navController = navController, startDestination = "login") {
-                        composable("login") {
-                            LoginScreen(navController = navController, name = "Login")
+                    NavHost(navController = navController, startDestination = context.getString(R.string.login)) {
+                        composable(context.getString(R.string.login)) {
+                            LoginScreen(navController = navController, name = context.getString(R.string.login))
                         }
-                        composable("home") {
-                            HomeScreen(navController = navController, name = "Home")
+                        composable(context.getString(R.string.home)) {
+                            HomeScreen(navController = navController, name = context.getString(R.string.home))
                         }
-                        composable("settings") {
-                            SettingsScreen(navController = navController, name = "Settings")
+                        composable(context.getString(R.string.settings)) {
+                            SettingsScreen(navController = navController, name = context.getString(R.string.settings))
                         }
                     }
                 }

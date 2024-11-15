@@ -253,7 +253,7 @@ val unspecified_scheme = ColorFamily(
 
 @Composable
 fun AppTheme(
-    darkTheme: Boolean = false, //isSystemInDarkTheme(),
+    darkTheme: Boolean = false, //todo remove comment here //isSystemInDarkTheme(),
     dynamicColor: Boolean = false,
     content: @Composable() () -> Unit
 ) {
