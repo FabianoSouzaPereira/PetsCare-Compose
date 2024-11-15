@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -18,7 +19,7 @@ import androidx.navigation.compose.rememberNavController
 import com.fabianospdev.petscare.presenter.ui.home.HomeScreen
 import com.fabianospdev.petscare.presenter.ui.login.LoginScreen
 import com.fabianospdev.petscare.presenter.ui.settings.SettingsScreen
-import com.fabianospdev.petscare.presenter.ui.theme.PetsCareTheme
+import com.fabianospdev.petscare.presenter.ui.theme.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 val montserratFamily = FontFamily(
@@ -36,19 +37,19 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            PetsCareTheme {
-                val context = applicationContext
-                Surface(modifier = Modifier.fillMaxSize(), color = Color.Transparent) {
+            val context = applicationContext
+            Surface(modifier = Modifier.fillMaxSize(), color = Color.Transparent, tonalElevation = 5.dp) {
+                AppTheme {
                     navController = rememberNavController()
                     NavHost(navController = navController, startDestination = "login") {
                         composable("login") {
-                            LoginScreen(navController = navController, name = "Login", context = context)
+                            LoginScreen(navController = navController, name = "Login")
                         }
                         composable("home") {
-                            HomeScreen(navController = navController, name = "Home", context = context)
+                            HomeScreen(navController = navController, name = "Home")
                         }
                         composable("settings") {
-                            SettingsScreen(navController = navController, name = "Settings", context = context)
+                            SettingsScreen(navController = navController, name = "Settings")
                         }
                     }
                 }
