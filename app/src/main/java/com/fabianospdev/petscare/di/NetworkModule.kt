@@ -1,12 +1,8 @@
-package com.fabianospdev.petscare.di
-/* In the context of Android, NetworkModule can be considered, or even called, RetrofitInitializer */
+package com.example.app.di
 
-import com.fabianospdev.petscare.network.LoginService
-import com.fabianospdev.petscare.network.NotificationService
-import com.fabianospdev.petscare.network.ProfileService
-import com.fabianospdev.petscare.network.UserService
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
+import com.fabianospdev.petscare.data.api.LoginService
+import com.fabianospdev.petscare.data.api.ProfileService
+import com.fabianospdev.petscare.data.api.UserService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,6 +10,7 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
@@ -21,37 +18,23 @@ import javax.inject.Singleton
 object NetworkModule {
 
     @Provides
-    fun provideGson(): Gson {
-        return GsonBuilder()
-            .setLenient()
-            .create()
-    }
-
-    @Provides
-    fun provideOkHttpClient(): OkHttpClient {
-        return OkHttpClient.Builder()
-            .addInterceptor { chain ->
-                val request = chain.request().newBuilder()
-                    .addHeader("Authorization", "Bearer YOUR_API_KEY_HERE")
-                    .build()
-                chain.proceed(request)
-            }
-            .build()
-    }
-
-
-    @Provides
-    fun provideRetrofit(
-        gson: Gson,
-        okHttpClient: OkHttpClient
-    ): Retrofit {
+    @Singleton
+    fun provideRetrofit(): Retrofit {
         return Retrofit.Builder()
             .baseUrl("https://api.example.com/")
-            .addConverterFactory(GsonConverterFactory.create(gson))
-            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(provideOkHttpClient())
             .build()
     }
 
+    @Provides
+    @Singleton
+    fun provideOkHttpClient(): OkHttpClient {
+        return OkHttpClient.Builder()
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .build()
+    }
 
     @Provides
     @Singleton
@@ -69,11 +52,5 @@ object NetworkModule {
     @Singleton
     fun provideProfileService(retrofit: Retrofit): ProfileService {
         return retrofit.create(ProfileService::class.java)
-    }
-
-    @Provides
-    @Singleton
-    fun provideNotificationService(retrofit: Retrofit): NotificationService {
-        return retrofit.create(NotificationService::class.java)
     }
 }
