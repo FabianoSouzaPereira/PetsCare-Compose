@@ -1,6 +1,6 @@
 package com.fabianospdev.petscare.domain.usecases
 
-import com.fabianospdev.petscare.data.models.User
+import com.fabianospdev.petscare.data.models.user.User
 import com.fabianospdev.petscare.domain.repositories.UserRepository
 import javax.inject.Inject
 

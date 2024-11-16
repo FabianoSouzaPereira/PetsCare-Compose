@@ -64,6 +64,7 @@ dependencies {
     implementation(libs.androidx.ui.test.junit4.android)
     implementation(libs.androidx.ui.text.google.fonts)
     implementation(libs.navigation.testing.ktx)
+    implementation(libs.androidx.runtime.livedata)
     testImplementation(libs.mockito.core)
     testImplementation(libs.mockito.inline)
     testImplementation(libs.junit)

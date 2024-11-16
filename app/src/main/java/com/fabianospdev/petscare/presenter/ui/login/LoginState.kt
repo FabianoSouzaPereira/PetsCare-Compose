@@ -1,6 +1,6 @@
 package com.fabianospdev.petscare.presenter.ui.login
 
-import com.fabianospdev.petscare.data.models.User
+import com.fabianospdev.petscare.data.models.user.User
 
 sealed class LoginState {
     object Loading : LoginState()
