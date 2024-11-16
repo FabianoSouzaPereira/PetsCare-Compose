@@ -71,7 +71,6 @@ fun LoginScreen(navController: NavHostController, name: String){
     var showPassword by remember { mutableStateOf(value = true) }
     var isUserNameEmpty by remember { mutableStateOf(value = username.isEmpty()) }
     var isPasswordEmpty by remember { mutableStateOf(value = password.isEmpty()) }
-    val fingerprint = android.os.Build.FINGERPRINT
 
     val gradient = Brush.linearGradient(
         colors = listOf(

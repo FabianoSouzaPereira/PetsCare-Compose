@@ -31,6 +31,7 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
+    testOptions.unitTests.isIncludeAndroidResources = true
     buildFeatures {
         compose = true
         viewBinding = true
@@ -48,21 +49,32 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation(libs.androidx.hilt.common)
-    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.dagger.hilt)
+    implementation(libs.dagger.hilt.compiler)
+    implementation (libs.hilt.viewmodel)
+    implementation(libs.hilt.viewmodel.compiler)
+    implementation(libs.hilt.navigation.compose)
+    implementation(libs.hilt.common)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.ui.tooling.preview)
     implementation(libs.androidx.junit)
     implementation(libs.androidx.espresso.core)
     implementation(libs.androidx.ui.test.junit4.android)
     implementation(libs.androidx.ui.text.google.fonts)
+    implementation(libs.navigation.testing.ktx)
     testImplementation(libs.mockito.core)
     testImplementation(libs.mockito.inline)
     testImplementation(libs.junit)
+    testImplementation(libs.roboeletric)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
+    androidTestImplementation(libs.mokito.kotlin)
+    androidTestImplementation(libs.navigation.testing)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
 }

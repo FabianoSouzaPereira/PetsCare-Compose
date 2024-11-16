@@ -1,25 +1,30 @@
 package com.fabianospdev.petscare.presenter.ui.login
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import androidx.lifecycle.viewModelScope
+import com.fabianospdev.petscare.domain.usecases.GetUserUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class LoginViewModel : ViewModel() {
-    var username by mutableStateOf(value = "email@gmail.com")
-    var password by mutableStateOf(value = "123456")
-    private  val _data = MutableLiveData<String>()
-    val data: LiveData<String> = _data
+@HiltViewModel
+class LoginViewModel @Inject constructor(
+    private val getUserUseCase: GetUserUseCase
+) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(LoginUiState())
-    val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
+    private val _state = MutableLiveData<LoginState>()
+    val state: LiveData<LoginState> get() = _state
 
-    private var _count = 0
-    val count: Int
-        get() = _count
+    fun login(username: String, password: String) {
+        viewModelScope.launch {
+            try {
+                val user = getUserUseCase.execute(username, password)
+                _state.value = LoginState.Success(user)
+            } catch (e: Exception) {
+                _state.value = LoginState.Error("Login failed")
+            }
+        }
+    }
 }

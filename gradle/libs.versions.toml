@@ -4,31 +4,52 @@ kotlin = "2.0.0"
 coreKtx = "1.15.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
+navigationTest = "2.8.4"
 espressoCore = "3.6.1"
 mockito = "4.8.1"
+mokitoKotlinVerion = "3.2.0"
+robolectricRoboEletric = "4.14"
 lifecycleRuntimeKtx = "2.8.7"
 activityCompose = "1.9.3"
 composeBom = "2024.10.01"
+
 hiltCommon = "1.2.0"
-hiltNavigationCompose = "1.2.0"
+hilt = "2.50"
+hilt-viewmodel = "1.0.0-alpha03"
+hilt-compiler = "1.2.0"
+hilt-navigation-compose = "1.2.0"
+
 lifecycleViewmodelCompose = "2.8.7"
 uiToolingPreview = "1.7.5"
 uiTestJunit4Android = "1.7.5"
 uiTextGoogleFonts = "1.7.5"
+navigationTestingKtx = "1.0.0-alpha06"
+
+retrofitversion = "2.5.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
-
 ## Tests ##
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest", version = "1.7.5" }
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-ui-test-junit4-android = { group = "androidx.compose.ui", name = "ui-test-junit4-android", version.ref = "uiTestJunit4Android" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+navigation-testing = { group = "androidx.navigation", name = "navigation-testing", version.ref = "navigationTest" }
+navigation-testing-ktx = { group = "android.arch.navigation", name = "navigation-testing-ktx", version.ref = "navigationTestingKtx" }
+mokito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version.ref = "mokitoKotlinVerion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 mockito-core = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
 mockito-inline = { group = "org.mockito", name = "mockito-inline", version.ref = "mockito" }
-
+roboeletric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectricRoboEletric" }
+## Hilt ##
+dagger-hilt = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
+dagger-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
+hilt-viewmodel = { module = "androidx.hilt:hilt-lifecycle-viewmodel", version.ref = "hilt-viewmodel" }
+hilt-viewmodel-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hilt-compiler" }
+hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref ="hilt-navigation-compose" }
+hilt-common = { group = "androidx.hilt", name = "hilt-common", version.ref = "hiltCommon" }
+## Normal libraries ##
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
@@ -37,11 +58,12 @@ androidx-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
-androidx-hilt-common = { group = "androidx.hilt", name = "hilt-common", version.ref = "hiltCommon" }
-androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 androidx-lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
 ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview", version.ref = "uiToolingPreview" }
 androidx-ui-text-google-fonts = { group = "androidx.compose.ui", name = "ui-text-google-fonts", version.ref = "uiTextGoogleFonts" }
+## Retrofit ##
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofitversion" }
+retrofit-converter = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofitversion" }
 
 
 [plugins]
