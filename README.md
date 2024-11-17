@@ -11,7 +11,8 @@
 ![](Arquiteture.png)
 
 
-Explicação:
+#### Explicação: 
+
 data/api/: Contém as interfaces para os serviços que fazem chamadas de rede (API) usando algo como Retrofit. 
 Os serviços são responsáveis por fazer as requisições HTTP.
 
