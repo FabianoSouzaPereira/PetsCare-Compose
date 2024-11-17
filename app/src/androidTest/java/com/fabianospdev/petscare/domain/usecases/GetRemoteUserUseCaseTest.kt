@@ -6,7 +6,7 @@ import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito.mock
 
-class GetUserUseCaseTest {
+class GetRemoteUserUseCaseTest {
 
     private lateinit var getUserUseCase: GetUserUseCase
     private lateinit var userRepository: UserRepository

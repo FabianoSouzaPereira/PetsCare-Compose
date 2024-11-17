@@ -1,4 +1,7 @@
 package com.fabianospdev.petscare.data.dao
 
-class LoginDao {
+import androidx.room.Dao
+
+@Dao
+interface LoginDao {
 }
