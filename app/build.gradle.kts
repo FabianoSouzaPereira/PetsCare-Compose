@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id("org.jetbrains.kotlin.kapt")
     alias(libs.plugins.kotlin.compose)
 }
 
@@ -40,32 +41,44 @@ android {
 }
 
 dependencies {
-
+    // Core Libraries
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
+
+    // Compose BOM
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.ui.tooling.preview)
+    implementation(libs.androidx.runtime.livedata)
+
+    // Hilt
     implementation(libs.dagger.hilt)
     implementation(libs.dagger.hilt.compiler)
     implementation (libs.hilt.viewmodel)
     implementation(libs.hilt.viewmodel.compiler)
     implementation(libs.hilt.navigation.compose)
     implementation(libs.hilt.common)
+
+    // Retrofit
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter)
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
-    implementation(libs.ui.tooling.preview)
+
+    // Room
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.room.runtime)
+    kapt(libs.androidx.room.compiler)
+
+    // Testing dependencies
     implementation(libs.androidx.junit)
     implementation(libs.androidx.espresso.core)
     implementation(libs.androidx.ui.test.junit4.android)
     implementation(libs.androidx.ui.text.google.fonts)
     implementation(libs.navigation.testing.ktx)
-    implementation(libs.androidx.runtime.livedata)
-    implementation(libs.androidx.room.ktx)
     testImplementation(libs.mockito.core)
     testImplementation(libs.mockito.inline)
     testImplementation(libs.junit)
@@ -76,7 +89,8 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     androidTestImplementation(libs.mokito.kotlin)
     androidTestImplementation(libs.navigation.testing)
+
+    // Debug dependencies
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-
 }
