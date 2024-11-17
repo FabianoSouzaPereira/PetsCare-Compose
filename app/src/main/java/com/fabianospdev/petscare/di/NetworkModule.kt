@@ -2,6 +2,7 @@ package com.example.app.di
 
 import com.fabianospdev.petscare.data.api.LoginService
 import com.fabianospdev.petscare.data.api.ProfileService
+import com.fabianospdev.petscare.data.api.SettingsService
 import com.fabianospdev.petscare.data.api.UserService
 import dagger.Module
 import dagger.Provides
@@ -52,5 +53,11 @@ object NetworkModule {
     @Singleton
     fun provideProfileService(retrofit: Retrofit): ProfileService {
         return retrofit.create(ProfileService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSettingsService(retrofit: Retrofit): SettingsService {
+        return retrofit.create(SettingsService::class.java)
     }
 }
