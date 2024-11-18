@@ -1,7 +1,7 @@
 package com.fabianospdev.petscare.domain.di
 
-import com.fabianospdev.petscare.domain.repositories.UserRepository
-import com.fabianospdev.petscare.domain.usecases.GetUserUseCase
+import com.fabianospdev.petscare.domain.repositories.UserRemoteRepository
+import com.fabianospdev.petscare.domain.usecases.UserRemoteUsecase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -12,7 +12,7 @@ import dagger.hilt.components.SingletonComponent
 object DomainModule {
 
     @Provides
-    fun provideGetUserUseCase(userRepository: UserRepository): GetUserUseCase {
-        return GetUserUseCase(userRepository)
+    fun provideGetUserUseCase(userRepository: UserRemoteRepository): UserRemoteUsecase {
+        return UserRemoteUsecase(userRepository)
     }
 }

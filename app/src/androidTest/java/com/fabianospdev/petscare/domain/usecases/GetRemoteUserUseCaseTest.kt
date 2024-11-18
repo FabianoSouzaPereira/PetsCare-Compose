@@ -1,6 +1,6 @@
 package com.fabianospdev.petscare.domain.usecases
 
-import com.fabianospdev.petscare.domain.repositories.UserRepository
+import com.fabianospdev.petscare.domain.repositories.UserRemoteRepository
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
@@ -8,13 +8,13 @@ import org.mockito.Mockito.mock
 
 class GetRemoteUserUseCaseTest {
 
-    private lateinit var getUserUseCase: GetUserUseCase
-    private lateinit var userRepository: UserRepository
+    private lateinit var getUserUseCase: UserRemoteUsecase
+    private lateinit var userRepository: UserRemoteRepository
 
     @Before
     fun setup() {
-        userRepository = mock(UserRepository::class.java)
-        getUserUseCase = GetUserUseCase(userRepository)
+        userRepository = mock(UserRemoteRepository::class.java)
+        getUserUseCase = UserRemoteUsecase(userRepository)
     }
 
     @Test

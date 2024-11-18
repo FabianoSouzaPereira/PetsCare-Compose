@@ -6,13 +6,16 @@ import com.fabianospdev.petscare.domain.repositories.SettingsRepository
 import javax.inject.Inject
 
 
-class SettingsRepositoryImpl @Inject constructor(private val settingsDao: SettingsDao): SettingsRepository {
+class SettingsRepositoryImpl @Inject constructor(
+    private val settingsDao: SettingsDao
+): SettingsRepository {
+
     override suspend fun getConfig(): RoomSettings {
         return settingsDao.getSettings()
     }
 
     override suspend fun updateConfig(config: RoomSettings) {
-        TODO("Not yet implemented")
+        return settingsDao.updateSettings(config)
     }
 
 

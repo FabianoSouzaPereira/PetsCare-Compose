@@ -1,9 +1,9 @@
 package com.example.app.di
 
-import com.fabianospdev.petscare.data.api.LoginService
-import com.fabianospdev.petscare.data.api.ProfileService
-import com.fabianospdev.petscare.data.api.SettingsService
-import com.fabianospdev.petscare.data.api.UserService
+import com.fabianospdev.petscare.data.api.LoginDatasource
+import com.fabianospdev.petscare.data.api.ProfileDatasource
+import com.fabianospdev.petscare.data.api.SettingsDatasource
+import com.fabianospdev.petscare.data.api.UserDatasource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -39,25 +39,25 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideLoginService(retrofit: Retrofit): LoginService {
-        return retrofit.create(LoginService::class.java)
+    fun provideLoginService(retrofit: Retrofit): LoginDatasource {
+        return retrofit.create(LoginDatasource::class.java)
     }
 
     @Provides
     @Singleton
-    fun provideUserService(retrofit: Retrofit): UserService {
-        return retrofit.create(UserService::class.java)
+    fun provideUserService(retrofit: Retrofit): UserDatasource {
+        return retrofit.create(UserDatasource::class.java)
     }
 
     @Provides
     @Singleton
-    fun provideProfileService(retrofit: Retrofit): ProfileService {
-        return retrofit.create(ProfileService::class.java)
+    fun provideProfileService(retrofit: Retrofit): ProfileDatasource {
+        return retrofit.create(ProfileDatasource::class.java)
     }
 
     @Provides
     @Singleton
-    fun provideSettingsService(retrofit: Retrofit): SettingsService {
-        return retrofit.create(SettingsService::class.java)
+    fun provideSettingsService(retrofit: Retrofit): SettingsDatasource {
+        return retrofit.create(SettingsDatasource::class.java)
     }
 }

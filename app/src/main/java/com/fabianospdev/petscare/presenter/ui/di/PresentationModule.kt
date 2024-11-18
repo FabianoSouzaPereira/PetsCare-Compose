@@ -1,6 +1,6 @@
 package com.fabianospdev.petscare.presenter.ui.di
 
-import com.fabianospdev.petscare.domain.usecases.GetUserUseCase
+import com.fabianospdev.petscare.domain.usecases.UserRemoteUsecase
 import com.fabianospdev.petscare.presenter.ui.login.LoginViewModel
 import dagger.Module
 import dagger.Provides
@@ -12,7 +12,7 @@ import dagger.hilt.android.components.ActivityComponent
 object PresentationModule {
 
     @Provides
-    fun provideLoginViewModel(getUserUseCase: GetUserUseCase): LoginViewModel {
+    fun provideLoginViewModel(getUserUseCase: UserRemoteUsecase): LoginViewModel {
         return LoginViewModel(getUserUseCase)
     }
 }

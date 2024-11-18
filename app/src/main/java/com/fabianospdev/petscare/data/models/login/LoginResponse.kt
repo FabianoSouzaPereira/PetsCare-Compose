@@ -1,4 +1,5 @@
 package com.fabianospdev.petscare.data.models.login
 
-class LoginResponse {
-}
+class LoginResponse(
+    val token: String
+)
