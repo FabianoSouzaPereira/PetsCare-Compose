@@ -1,5 +1,7 @@
 package com.fabianospdev.petscare.data.models.login
 
-class LoginResponse(
-    val token: String
+import com.google.gson.annotations.SerializedName
+
+data class LoginResponse(
+    @SerializedName("token") val token: String
 )

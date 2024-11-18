@@ -2,13 +2,13 @@ package com.fabianospdev.petscare.data.repositories
 import com.fabianospdev.petscare.data.api.LoginDatasource
 import com.fabianospdev.petscare.data.models.login.LoginRequest
 import com.fabianospdev.petscare.data.models.login.LoginResponse
-import com.fabianospdev.petscare.domain.repositories.LoginRepository
+import com.fabianospdev.petscare.domain.repositories.LoginRemoteRepository
 import retrofit2.Response
 import javax.inject.Inject
 
-class LoginRepositoryImpl @Inject constructor(
+class LoginRemoteRepositoryImpl @Inject constructor(
     private val datasource: LoginDatasource
-) : LoginRepository {
+) : LoginRemoteRepository {
 
     override suspend fun login(username: String, password: String): Result<Response<LoginResponse>> {
         return try {

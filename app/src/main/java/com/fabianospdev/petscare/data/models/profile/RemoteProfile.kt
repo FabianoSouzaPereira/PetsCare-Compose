@@ -1,4 +1,5 @@
 package com.fabianospdev.petscare.data.models.profile
 
-class Profile {
-}
+data class RemoteProfile(
+    val name: String
+)

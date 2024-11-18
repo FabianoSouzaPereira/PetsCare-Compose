@@ -14,7 +14,7 @@ import retrofit2.http.Path
 interface UserDatasource {
 
     @GET("user/{username}")
-    suspend fun getUser(@Path("username") username: String): Response<RemoteUser>
+    suspend fun getUser(@Path("username") username: String, @Path("password") password: String): Response<RemoteUser>
 
     @GET("user/{id}")
     suspend fun getUserById(@Path("id") userId: Int): Response<RemoteUser>
@@ -30,5 +30,8 @@ interface UserDatasource {
 
     @GET("user/all")
     suspend fun getAllUsers(): Response<List<RemoteUser>>
+
+    @GET("user/data")
+    suspend fun userData(): Response<RemoteUser>
 }
 

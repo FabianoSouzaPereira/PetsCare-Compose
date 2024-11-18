@@ -2,7 +2,7 @@ package com.fabianospdev.petscare.data.api
 
 /* Retrofit will implements this Datasource */
 
-import com.fabianospdev.petscare.data.models.profile.Profile
+import com.fabianospdev.petscare.data.models.profile.RemoteProfile
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -11,5 +11,5 @@ import retrofit2.http.Path
 interface ProfileDatasource {
 
     @GET("profile/{id}")
-    suspend fun getProfile(@Path("id") userId: Int): Response<Profile>
+    suspend fun getProfile(@Path("id") userId: Int): Response<RemoteProfile>
 }

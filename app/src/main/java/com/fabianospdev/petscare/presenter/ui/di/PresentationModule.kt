@@ -1,6 +1,6 @@
 package com.fabianospdev.petscare.presenter.ui.di
 
-import com.fabianospdev.petscare.domain.usecases.UserRemoteUsecase
+import com.fabianospdev.petscare.domain.usecases.user.UserRemoteUsecase
 import com.fabianospdev.petscare.presenter.ui.login.LoginViewModel
 import dagger.Module
 import dagger.Provides

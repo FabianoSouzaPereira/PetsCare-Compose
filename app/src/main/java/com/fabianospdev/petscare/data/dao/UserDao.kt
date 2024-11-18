@@ -13,8 +13,8 @@ interface UserDao {
     @Query(value = "SELECT * FROM user")
     suspend fun getAllUsers(): List<RoomUser>
 
-    @Query(value = "SELECT user FROM user WHERE id = :id Limit 1")
-    suspend fun getLocalUser(id: Int): RoomUser?
+    @Query(value = "SELECT * FROM user WHERE full_name = :name and password = :password Limit 1")
+    suspend fun getLocalUser(name: String, password: String): RoomUser?
 
     @Insert
     suspend fun insertUser(user: RoomUser)

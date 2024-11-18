@@ -17,6 +17,4 @@ class SettingsRepositoryImpl @Inject constructor(
     override suspend fun updateConfig(config: RoomSettings) {
         return settingsDao.updateSettings(config)
     }
-
-
 }

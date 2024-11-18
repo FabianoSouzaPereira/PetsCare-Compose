@@ -2,6 +2,8 @@ package com.fabianospdev.petscare.di
 
 import android.app.Application
 import android.content.SharedPreferences
+import androidx.room.Room
+import com.fabianospdev.petscare.data.appdatabase.AppDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,10 +20,10 @@ object AppModule {
         return app.getSharedPreferences("app_prefs", Application.MODE_PRIVATE)
     }
 
-//    @Provides
-//    @Singleton
-//    fun provideAppDatabase(app: Application): AppDatabase {
-//        return Room.databaseBuilder(app, AppDatabase::class.java, "app_database")
-//            .build()
-//    }
+    @Provides
+    @Singleton
+    fun provideAppDatabase(app: Application): AppDatabase {
+        return Room.databaseBuilder(app, AppDatabase::class.java, "app_database")
+            .build()
+    }
 }

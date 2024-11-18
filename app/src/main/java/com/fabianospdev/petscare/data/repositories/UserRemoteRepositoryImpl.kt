@@ -22,9 +22,9 @@ class UserRemoteRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getUser(name: String): Result<Response<RemoteUser>> {
+    override suspend fun getUser(name: String, password: String): Result<Response<RemoteUser>> {
         return try {
-            val response = datasource.getUser(name)
+            val response = datasource.getUser(name, password)
             if (response.isSuccessful && response.body() != null) {
                 Result.success(response)
             } else {
@@ -78,6 +78,19 @@ class UserRemoteRepositoryImpl @Inject constructor(
         return try {
             val response = datasource.deleteUser(id)
             if (response.isSuccessful) {
+                Result.success(response)
+            } else {
+                Result.failure(Exception("Usuário não encontrado"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun getUserData(token: String): Result<Response<RemoteUser>> {
+        return try {
+            val response = datasource.userData()
+            if (response.isSuccessful){
                 Result.success(response)
             } else {
                 Result.failure(Exception("Usuário não encontrado"))

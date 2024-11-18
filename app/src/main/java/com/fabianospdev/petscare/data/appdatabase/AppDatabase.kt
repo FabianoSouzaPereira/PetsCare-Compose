@@ -4,13 +4,18 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.fabianospdev.petscare.data.dao.LoginDao
 import com.fabianospdev.petscare.data.dao.UserDao
+import com.fabianospdev.petscare.data.models.login.RoomLogin
 import com.fabianospdev.petscare.data.models.user.local.RoomUser
 
-@Database(entities = [RoomUser::class], version = 1, exportSchema = false)
+@Database(entities = [RoomUser::class, RoomLogin::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun userDao(): UserDao
+    abstract fun loginDao(): LoginDao
+    //abstract fun profileDao(): ProfileDao
+    //abstract fun settingsDao(): SettingsDao
 
     companion object {
         @Volatile

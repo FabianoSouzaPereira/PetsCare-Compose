@@ -8,6 +8,7 @@ fun RemoteUser.toRoomUser(): RoomUser {
         id = this.id,
         name = this.name,
         email = this.email,
+        password = this.password,
         createdAt = this.createdAt
     )
 }

@@ -1,6 +1,7 @@
 package com.fabianospdev.petscare.domain.usecases
 
 import com.fabianospdev.petscare.domain.repositories.UserRemoteRepository
+import com.fabianospdev.petscare.domain.usecases.user.UserRemoteUsecase
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test

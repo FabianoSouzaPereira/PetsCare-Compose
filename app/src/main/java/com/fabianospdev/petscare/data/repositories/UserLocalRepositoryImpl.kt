@@ -7,10 +7,12 @@ import com.fabianospdev.petscare.data.models.user.toRoomUser
 import com.fabianospdev.petscare.domain.repositories.UserLocalRepository
 import javax.inject.Inject
 
-class UserLocalRepositoryImpl @Inject constructor(private val userDao: UserDao): UserLocalRepository {
+class UserLocalRepositoryImpl @Inject constructor(
+    private val userDao: UserDao
+): UserLocalRepository {
 
-    override suspend fun getLocalUser(id: Int): RoomUser {
-        val response = userDao.getLocalUser(id = id)
+    override suspend fun getLocalUser(name: String, password: String): RoomUser {
+        val response = userDao.getLocalUser(name, password)
         return response ?: throw Exception("User local not found")
     }
 
