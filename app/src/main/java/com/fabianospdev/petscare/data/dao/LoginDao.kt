@@ -1,8 +1,10 @@
 package com.fabianospdev.petscare.data.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 import com.fabianospdev.petscare.data.models.login.RoomLogin
 
 @Dao
@@ -13,9 +15,9 @@ interface LoginDao {
     @Insert
     suspend fun insert(user: RoomLogin): Result<RoomLogin>
 
-    @Insert
+    @Update
     suspend fun update(user: RoomLogin): Result<RoomLogin>
 
-    @Insert
+    @Delete
     suspend fun delete(user: RoomLogin): Result<RoomLogin>
 }

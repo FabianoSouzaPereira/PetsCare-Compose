@@ -5,19 +5,23 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import com.fabianospdev.petscare.data.models.profile.RemoteProfile
+import com.fabianospdev.petscare.data.models.profile.RoomProfile
 
 @Dao
 interface ProfileDao {
-    @Query(value = "SELECT * FROM profile")
-    fun getProfile(profile: RemoteProfile)
+
+    @Query("SELECT * FROM profile")
+    suspend fun getAllProfiles(): List<RoomProfile>?
+
+    @Query("SELECT * FROM profile WHERE id = :id LIMIT 1")
+    suspend fun getProfile(id: Int) : RoomProfile?
 
     @Insert
-    suspend fun insertProfile(profile: RemoteProfile)
+    suspend fun insertProfile(profile: RoomProfile)
 
     @Update
-    suspend fun updateProfile(profile: RemoteProfile)
+    suspend fun updateProfile(profile: RoomProfile)
 
     @Delete
-    suspend fun deleteProfile(profile: RemoteProfile)
+    suspend fun deleteProfile(profile: RoomProfile)
 }

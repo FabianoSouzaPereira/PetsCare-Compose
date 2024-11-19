@@ -1,6 +1,8 @@
 package com.fabianospdev.petscare.data.di
 
 import com.fabianospdev.petscare.data.api.LoginDatasource
+import com.fabianospdev.petscare.data.api.ProfileDatasource
+import com.fabianospdev.petscare.data.api.SettingsDatasource
 import com.fabianospdev.petscare.data.api.UserDatasource
 import com.fabianospdev.petscare.data.dao.LoginDao
 import com.fabianospdev.petscare.data.dao.ProfileDao
@@ -9,16 +11,18 @@ import com.fabianospdev.petscare.data.dao.UserDao
 import com.fabianospdev.petscare.data.repositories.LoginLocalRepositoryImpl
 import com.fabianospdev.petscare.data.repositories.LoginRemoteRepositoryImpl
 import com.fabianospdev.petscare.data.repositories.ProfileLocalRepositoryImpl
-import com.fabianospdev.petscare.data.repositories.ProfileRemotoRepositoryImpl
+import com.fabianospdev.petscare.data.repositories.ProfileRemoteRepositoryImpl
 import com.fabianospdev.petscare.data.repositories.SettingsLocalRepositoryImpl
 import com.fabianospdev.petscare.data.repositories.SettingsRepositoryImpl
+import com.fabianospdev.petscare.data.repositories.UserLocalRepositoryImpl
 import com.fabianospdev.petscare.data.repositories.UserRemoteRepositoryImpl
 import com.fabianospdev.petscare.domain.repositories.LoginLocalRepository
 import com.fabianospdev.petscare.domain.repositories.LoginRemoteRepository
 import com.fabianospdev.petscare.domain.repositories.ProfileLocalRepository
-import com.fabianospdev.petscare.domain.repositories.ProfileRemotoRepository
+import com.fabianospdev.petscare.domain.repositories.ProfileRemoteRepository
 import com.fabianospdev.petscare.domain.repositories.SettingsLocalRepository
 import com.fabianospdev.petscare.domain.repositories.SettingsRepository
+import com.fabianospdev.petscare.domain.repositories.UserLocalRepository
 import com.fabianospdev.petscare.domain.repositories.UserRemoteRepository
 import dagger.Module
 import dagger.Provides
@@ -30,16 +34,51 @@ import retrofit2.Retrofit
 @InstallIn(SingletonComponent::class)
 object DataModule {
 
-    @Provides
-    fun provideSettingsRepository(
-        settingsDao: SettingsDao
-    ): SettingsRepository {
-        return SettingsRepositoryImpl(settingsDao)
-    }
+    /**  DATASOURCES  **/
 
+    @Provides
+    fun provideLoginDatasource(retrofit: Retrofit): LoginDatasource {
+        return retrofit.create(LoginDatasource::class.java)
+    }
     @Provides
     fun provideUserDatasource(retrofit: Retrofit): UserDatasource {
         return retrofit.create(UserDatasource::class.java)
+    }
+
+    @Provides
+    fun provideProfileDatasource(retrofit: Retrofit): ProfileDatasource {
+        return retrofit.create(ProfileDatasource::class.java)
+    }
+
+    @Provides
+    fun provideSettingsDatasource(retrofit: Retrofit): SettingsDatasource {
+        return retrofit.create(SettingsDatasource::class.java)
+    }
+
+    @Provides
+    fun provideLoginDao(retrofit: Retrofit): LoginDao {
+        return retrofit.create(LoginDao::class.java)
+    }
+    @Provides
+    fun provideUserDao(retrofit: Retrofit): UserDao {
+        return retrofit.create(UserDao::class.java)
+    }
+
+    @Provides
+    fun provideProfileDao(retrofit: Retrofit): ProfileDao {
+        return retrofit.create(ProfileDao::class.java)
+    }
+
+    @Provides
+    fun provideSettingsDao(retrofit: Retrofit): SettingsDao {
+        return retrofit.create(SettingsDao::class.java)
+    }
+
+    /**  REPOSITORIES  **/
+
+    @Provides
+    fun provideSettingsRepository(settingsDao: SettingsDao): SettingsRepository {
+        return SettingsRepositoryImpl(settingsDao)
     }
 
     @Provides
@@ -48,12 +87,12 @@ object DataModule {
     }
 
     @Provides
-    fun provideLoginService(retrofit: Retrofit): LoginDatasource {
-        return retrofit.create(LoginDatasource::class.java)
+    fun provideUserLocalRepository(userDao: UserDao): UserLocalRepository {
+        return UserLocalRepositoryImpl(userDao)
     }
 
     @Provides
-    fun provideLoginRemotoRepository(loginDatasource: LoginDatasource): LoginRemoteRepository {
+    fun provideLoginRemoteRepository(loginDatasource: LoginDatasource): LoginRemoteRepository {
         return LoginRemoteRepositoryImpl(loginDatasource)
     }
 
@@ -63,8 +102,8 @@ object DataModule {
     }
 
     @Provides
-    fun provideProfileRemotoRepository(profileDao: ProfileDao): ProfileRemotoRepository {
-        return ProfileRemotoRepositoryImpl(profileDao)
+    fun provideProfileRemoteRepository(profileDatasource: ProfileDatasource): ProfileRemoteRepository {
+        return ProfileRemoteRepositoryImpl(profileDatasource)
     }
 
     @Provides

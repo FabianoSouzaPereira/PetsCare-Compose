@@ -2,7 +2,7 @@ package com.fabianospdev.petscare.domain.di
 
 import com.fabianospdev.petscare.domain.repositories.LoginLocalRepository
 import com.fabianospdev.petscare.domain.repositories.LoginRemoteRepository
-import com.fabianospdev.petscare.domain.repositories.ProfileRemotoRepository
+import com.fabianospdev.petscare.domain.repositories.ProfileRemoteRepository
 import com.fabianospdev.petscare.domain.repositories.SettingsRepository
 import com.fabianospdev.petscare.domain.repositories.UserLocalRepository
 import com.fabianospdev.petscare.domain.repositories.UserRemoteRepository
@@ -24,21 +24,22 @@ import dagger.hilt.components.SingletonComponent
 object DomainModule {
 
     @Provides
-    fun provideGetUserUseCase(
-        userRemoteRepository: UserRemoteRepository
-    ): UserRemoteUsecase {
+    fun provideUserRemoteUseCase(userRemoteRepository: UserRemoteRepository): UserRemoteUsecase {
         return UserRemoteUsecaseImpl(userRemoteRepository)
     }
 
     @Provides
-    fun provideLoginUsecase(
-        loginRemoteRepository: LoginRemoteRepository
-    ): LoginRemoteUsecase {
+    fun provideLoginRemoteUsecase(loginRemoteRepository: LoginRemoteRepository): LoginRemoteUsecase {
         return LoginRemoteUsecase(loginRemoteRepository)
     }
 
     @Provides
-    fun provideProfileUsecase(profileRepository: ProfileRemotoRepository): ProfileUsecase {
+    fun provideLoginLocalUsecase(loginLocalRepository: LoginLocalRepository): LoginLocalUsecase {
+        return LoginLocalUsecase(loginLocalRepository)
+    }
+
+    @Provides
+    fun provideProfileUsecase(profileRepository: ProfileRemoteRepository): ProfileUsecase {
         return ProfileUsecase(profileRepository)
     }
 
@@ -53,14 +54,7 @@ object DomainModule {
     }
 
     @Provides
-    fun provideUserRemoteUsecase(
-        loginRemoteRepository: LoginRemoteRepository
-    ): LoginRemoteUsecase {
+    fun provideUserRemoteUsecase(loginRemoteRepository: LoginRemoteRepository): LoginRemoteUsecase {
         return LoginRemoteUsecase(loginRemoteRepository)
-    }
-
-    @Provides
-    fun provideLoginLocalUsecase(loginLocalRespository: LoginLocalRepository): LoginLocalUsecase {
-        return LoginLocalUsecase(loginLocalRespository)
     }
 }

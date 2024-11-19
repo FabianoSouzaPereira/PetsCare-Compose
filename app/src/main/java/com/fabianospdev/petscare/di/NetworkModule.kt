@@ -8,7 +8,7 @@ import com.fabianospdev.petscare.data.dao.LoginDao
 import com.fabianospdev.petscare.data.dao.ProfileDao
 import com.fabianospdev.petscare.data.dao.SettingsDao
 import com.fabianospdev.petscare.data.dao.UserDao
-import com.fabianospdev.petscare.domain.repositories.ProfileRemotoRepository
+import com.fabianospdev.petscare.domain.repositories.ProfileRemoteRepository
 import com.fabianospdev.petscare.domain.repositories.SettingsRepository
 import com.fabianospdev.petscare.domain.repositories.UserLocalRepository
 import com.fabianospdev.petscare.domain.repositories.UserRemoteRepository
@@ -112,7 +112,7 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideProfileRepository(retrofit: Retrofit): ProfileRemotoRepository {
-        return retrofit.create(ProfileRemotoRepository::class.java)
+    fun provideProfileRepository(retrofit: Retrofit): ProfileRemoteRepository {
+        return retrofit.create(ProfileRemoteRepository::class.java)
     }
 }

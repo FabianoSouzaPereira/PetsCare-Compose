@@ -1,20 +1,20 @@
 [versions]
 agp = "8.7.2"
-kotlin = "2.0.0"
+kotlin = "2.0.20"
 coreKtx = "1.15.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 navigationTest = "2.8.4"
 espressoCore = "3.6.1"
-mockito = "4.8.1"
-mokitoKotlinVerion = "3.2.0"
+mockito = "5.14.2"
+mokitoKotlinVerion = "5.4.0"
 robolectricRoboEletric = "4.14"
 lifecycleRuntimeKtx = "2.8.7"
 activityCompose = "1.9.3"
-composeBom = "2024.10.01"
+composeBom = "2024.11.00"
 
 hiltCommon = "1.2.0"
-hilt = "2.50"
+hilt = "2.52"
 hilt-viewmodel = "1.0.0-alpha03"
 hilt-compiler = "1.2.0"
 hilt-navigation-compose = "1.2.0"
@@ -23,9 +23,8 @@ lifecycleViewmodelCompose = "2.8.7"
 uiToolingPreview = "1.7.5"
 uiTestJunit4Android = "1.7.5"
 uiTextGoogleFonts = "1.7.5"
-navigationTestingKtx = "1.0.0-alpha06"
 
-retrofitversion = "2.5.0"
+retrofitversion = "2.11.0"
 runtimeLivedata = "1.7.5"
 roomKtx = "2.6.1"
 
@@ -33,14 +32,13 @@ roomKtx = "2.6.1"
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 ## Tests ##
 junit = { group = "junit", name = "junit", version.ref = "junit" }
+navigation-testing = { group = "androidx.navigation", name = "navigation-testing", version.ref = "navigationTest" }
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest", version = "1.7.5" }
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-ui-test-junit4-android = { group = "androidx.compose.ui", name = "ui-test-junit4-android", version.ref = "uiTestJunit4Android" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
-navigation-testing = { group = "androidx.navigation", name = "navigation-testing", version.ref = "navigationTest" }
-navigation-testing-ktx = { group = "android.arch.navigation", name = "navigation-testing-ktx", version.ref = "navigationTestingKtx" }
-mokito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version.ref = "mokitoKotlinVerion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+mokito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version.ref = "mokitoKotlinVerion" }
 mockito-core = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
 mockito-inline = { group = "org.mockito", name = "mockito-inline", version.ref = "mockito" }
 roboeletric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectricRoboEletric" }

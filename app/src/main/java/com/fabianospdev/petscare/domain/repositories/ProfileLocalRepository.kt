@@ -1,10 +1,11 @@
 package com.fabianospdev.petscare.domain.repositories
 
-import com.fabianospdev.petscare.data.models.profile.RemoteProfile
+import com.fabianospdev.petscare.data.models.profile.RoomProfile
 
 interface ProfileLocalRepository {
-    suspend fun getLocalProfile(profile: RemoteProfile)
-    suspend fun insertLocalProfile(profile: RemoteProfile)
-    suspend fun updateLocalProfile(profile: RemoteProfile)
-    suspend fun deleteLocalProfile(profile: RemoteProfile)
+    suspend fun getAllProfiles(): List<RoomProfile>?
+    suspend fun getLocalProfile(id: Int) : RoomProfile?
+    suspend fun insertLocalProfile(profile: RoomProfile)
+    suspend fun updateLocalProfile(profile: RoomProfile)
+    suspend fun deleteLocalProfile(profile: RoomProfile)
 }
