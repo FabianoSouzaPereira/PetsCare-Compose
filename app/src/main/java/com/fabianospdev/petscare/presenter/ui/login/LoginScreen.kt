@@ -584,23 +584,3 @@ fun DefaultLogin() {
         LoginScreen(navController = rememberNavController(), name = stringResource(R.string.login))
     }
 }
-
-@Preview(
-    name = "dialog",
-    group = "auth",
-    showSystemUi = true,
-    showBackground = true
-)
-@Composable
-fun DefaultDialog(){
-    val gradient = Brush.linearGradient(
-        colors = listOf(
-            MaterialTheme.colorScheme.primary,
-            MaterialTheme.colorScheme.secondary
-        )
-    )
-
-    AppTheme {
-        ShowDialog("Login Failed", gradient = gradient,{})
-    }
-}
