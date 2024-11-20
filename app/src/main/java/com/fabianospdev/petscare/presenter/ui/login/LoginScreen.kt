@@ -9,6 +9,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,9 +18,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -42,11 +45,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -54,6 +60,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -67,8 +74,6 @@ import androidx.navigation.compose.rememberNavController
 import com.fabianospdev.petscare.R
 import com.fabianospdev.petscare.presenter.ui.theme.AppTheme
 import com.fabianospdev.petscare.presenter.ui.utils.LoadFontsFamily
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 
 @Composable
@@ -87,6 +92,8 @@ fun LoginScreen(
     val isPasswordEmpty = remember { mutableStateOf(value = password.value.isEmpty()) }
     val isFormValid = username.value.isNotEmpty() && password.value.isNotEmpty()
     val snackbarHostState = remember { SnackbarHostState() }
+    val focusRequester = remember { FocusRequester() }
+    val keyboardController = LocalSoftwareKeyboardController.current
 
 
     val gradient = Brush.linearGradient(
@@ -141,7 +148,16 @@ fun LoginScreen(
                                 username.value = it
                                 isUserNameEmpty.value = it.isEmpty()
                             },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                            label = { Text("Email") },
+                            keyboardOptions = KeyboardOptions.Default.copy(
+                                keyboardType = KeyboardType.Text,
+                                imeAction = ImeAction.Next
+                            ),
+                            keyboardActions = KeyboardActions(
+                                onNext = {
+                                    focusRequester.requestFocus()
+                                }
+                            ),
                             textStyle = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold),
                             shape = RoundedCornerShape(25),
                             modifier = Modifier
@@ -151,10 +167,11 @@ fun LoginScreen(
                                     MaterialTheme.colorScheme.primary,
                                     shape = RoundedCornerShape(dimensionResource(R.dimen.textfield_rounded_corner_shape))
                                 )
-                                .clip(RoundedCornerShape(dimensionResource(R.dimen.textfield_rounded_corner_shape))),
+                                .clip(RoundedCornerShape(dimensionResource(R.dimen.textfield_rounded_corner_shape)))
+                                .focusRequester(focusRequester),
                             placeholder = {
                                 Text(
-                                    stringResource(R.string.email_email_com),
+                                    text = stringResource(R.string.email_email_com),
                                     style = TextStyle(
                                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
                                         fontSize = 16.sp,
@@ -215,7 +232,15 @@ fun LoginScreen(
                             onValueChange = {
                                 password.value = it
                             },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                            label = { Text("Password") },
+                            keyboardOptions = KeyboardOptions.Default.copy(
+                                imeAction = ImeAction.Done
+                            ),
+                            keyboardActions = KeyboardActions(
+                                onDone = {
+                                    keyboardController?.hide()
+                                }
+                            ),
                             visualTransformation = if (showPassword.value) VisualTransformation.None else
                                 PasswordVisualTransformation(),
                             textStyle = TextStyle(
@@ -231,7 +256,8 @@ fun LoginScreen(
                                     MaterialTheme.colorScheme.primary,
                                     shape = RoundedCornerShape(16.dp)
                                 )
-                                .clip(RoundedCornerShape(16.dp)),
+                                .clip(RoundedCornerShape(16.dp))
+                                .focusRequester(focusRequester),
                             colors = TextFieldDefaults.colors(
                                 focusedTextColor = MaterialTheme.colorScheme.onSurface,
                                 unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
@@ -362,13 +388,14 @@ fun LoginScreen(
                 else -> "Unknown error"
             }
 
-            LaunchedEffect(errorMessage) {
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
-                }
+            ShowDialog(errorMessage, gradient) {
+                viewModel.resetState()
             }
-
-            Text("Error: $errorMessage")
+            ClearInputFields(username, password)
+            ShowRetryButton(onRetry = {
+                viewModel.login(username.value, password.value)
+                }
+            )
         }
         is LoginState.NoConnection -> {
             ShowToastMessage((state as LoginState.NoConnection).errorMessage)
@@ -440,6 +467,88 @@ fun ShowTextViewMessage(message: String) {
 }
 
 @Composable
+fun ShowDialog(message: String, gradient: Brush, onDismiss: () -> Unit) {
+    val context = LocalContext.current
+
+    AlertDialog(
+        modifier = Modifier
+            .size(width = 300.dp, height = 300.dp)
+            .clip(RoundedCornerShape(22.dp))
+            .background(gradient)
+            .border(
+                BorderStroke(
+                    width = 4.dp,
+                    color = MaterialTheme.colorScheme.primary
+                ),
+                shape = RoundedCornerShape(22.dp)
+            ),
+        onDismissRequest = onDismiss,
+        title = {
+            Box(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = "Something went wrong",
+                    modifier = Modifier.align(Alignment.Center),
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.error,
+                    fontStyle = FontStyle.Normal
+                )
+            }
+        },
+        text = {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(20.dp)
+            ) {
+                Text(
+                    text = "The following error occurred:",
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    fontSize = 18.sp
+                )
+                Text(
+                    text = message,
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    fontSize = 22.sp
+                )
+            }
+        },
+        confirmButton = {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 40.dp),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Row {
+                    Button(
+                        onClick = {
+                            onDismiss()
+                        },
+                        modifier = Modifier
+                            .width(dimensionResource(R.dimen.button_width_small))
+                            .clip(RoundedCornerShape(dimensionResource(R.dimen.button_rounded_corner_shape)))
+                            .background(gradient)
+                            .border(
+                                BorderStroke(
+                                    width = dimensionResource(R.dimen.button_border_size),
+                                    color = MaterialTheme.colorScheme.onPrimary
+                                ),
+                                shape = RoundedCornerShape(dimensionResource(R.dimen.button_rounded_corner_shape))
+                            ),
+                    ) {
+                        Text("Ok")
+                    }
+                }
+            }
+        },
+        tonalElevation = 5.dp,
+    )
+}
+
+
+@Composable
 fun ClearInputFields(username: MutableState<String>, password: MutableState<String>) {
     username.value = ""
     password.value = ""
@@ -447,11 +556,18 @@ fun ClearInputFields(username: MutableState<String>, password: MutableState<Stri
 
 @Composable
 fun ShowRetryButton(onRetry: () -> Unit) {
-    Button(
-        onClick = onRetry,
-        modifier = Modifier.fillMaxWidth().padding(16.dp)
+    Box(
+        modifier = Modifier.fillMaxSize()
     ) {
-        Text("Try Again")
+        Button(
+            onClick = onRetry,
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+                .padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 60.dp)
+        ) {
+            Text("Try Again")
+        }
     }
 }
 
@@ -466,5 +582,25 @@ fun ShowRetryButton(onRetry: () -> Unit) {
 fun DefaultLogin() {
     AppTheme {
         LoginScreen(navController = rememberNavController(), name = stringResource(R.string.login))
+    }
+}
+
+@Preview(
+    name = "dialog",
+    group = "auth",
+    showSystemUi = true,
+    showBackground = true
+)
+@Composable
+fun DefaultDialog(){
+    val gradient = Brush.linearGradient(
+        colors = listOf(
+            MaterialTheme.colorScheme.primary,
+            MaterialTheme.colorScheme.secondary
+        )
+    )
+
+    AppTheme {
+        ShowDialog("Login Failed", gradient = gradient,{})
     }
 }
