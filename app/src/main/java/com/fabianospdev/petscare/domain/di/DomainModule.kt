@@ -1,6 +1,5 @@
 package com.fabianospdev.petscare.domain.di
 
-import com.fabianospdev.petscare.domain.repositories.LoginLocalRepository
 import com.fabianospdev.petscare.domain.repositories.LoginRemoteRepository
 import com.fabianospdev.petscare.domain.repositories.ProfileRemoteRepository
 import com.fabianospdev.petscare.domain.repositories.SettingsRepository
@@ -8,7 +7,6 @@ import com.fabianospdev.petscare.domain.repositories.UserLocalRepository
 import com.fabianospdev.petscare.domain.repositories.UserRemoteRepository
 import com.fabianospdev.petscare.domain.usecases.ProfileUsecase
 import com.fabianospdev.petscare.domain.usecases.SettingsUsecase
-import com.fabianospdev.petscare.domain.usecases.login.LoginLocalUsecase
 import com.fabianospdev.petscare.domain.usecases.login.LoginRemoteUsecase
 import com.fabianospdev.petscare.domain.usecases.user.UserLocalUsecase
 import com.fabianospdev.petscare.domain.usecases.user.UserLocalUsecaseImpl
@@ -34,11 +32,6 @@ object DomainModule {
     }
 
     @Provides
-    fun provideLoginLocalUsecase(loginLocalRepository: LoginLocalRepository): LoginLocalUsecase {
-        return LoginLocalUsecase(loginLocalRepository)
-    }
-
-    @Provides
     fun provideProfileUsecase(profileRepository: ProfileRemoteRepository): ProfileUsecase {
         return ProfileUsecase(profileRepository)
     }
@@ -54,7 +47,7 @@ object DomainModule {
     }
 
     @Provides
-    fun provideUserRemoteUsecase(loginRemoteRepository: LoginRemoteRepository): LoginRemoteUsecase {
-        return LoginRemoteUsecase(loginRemoteRepository)
+    fun provideUserRemoteUsecase(userRemoteRepository: UserRemoteRepository): UserRemoteUsecase {
+        return UserRemoteUsecaseImpl(userRemoteRepository)
     }
 }

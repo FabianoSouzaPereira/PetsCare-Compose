@@ -21,6 +21,7 @@ open class UserNotFoundException(message: String? = "User not found", cause: Thr
 open class EmailAlreadyInUseException(message: String? = "Email already in use", cause: Throwable? = null) : UserException(message, cause)
 open class PasswordTooWeakException(message: String? = "Password is too weak", cause: Throwable? = null) : UserException(message, cause)
 open class InvalidTokenException(message: String? = "Invalid authentication token", cause: Throwable? = null) : UserException(message, cause)
+open class ValidationException(message: String? = "Validation failed", cause: Throwable? = null) : UserException(message, cause)
 open class AccountLockedException(message: String? = "Account locked", cause: Throwable? = null) : UserException(message, cause)
 open class SessionExpiredException(message: String? = "Session expired", cause: Throwable? = null) : UserException(message, cause)
 

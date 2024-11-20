@@ -6,6 +6,7 @@ import com.fabianospdev.petscare.data.api.LoginDatasource
 import com.fabianospdev.petscare.data.api.ProfileDatasource
 import com.fabianospdev.petscare.data.api.SettingsDatasource
 import com.fabianospdev.petscare.data.api.UserDatasource
+import com.fabianospdev.petscare.domain.repositories.LoginRemoteRepository
 import com.fabianospdev.petscare.domain.repositories.ProfileRemoteRepository
 import com.fabianospdev.petscare.domain.repositories.SettingsRepository
 import com.fabianospdev.petscare.domain.repositories.UserRemoteRepository
@@ -82,5 +83,10 @@ object NetworkModule {
     @Singleton
     fun provideProfileRepository(retrofit: Retrofit): ProfileRemoteRepository {
         return retrofit.create(ProfileRemoteRepository::class.java)
+    }
+
+    @Provides
+    fun provideLoginRemoteRepository(retrofit: Retrofit): LoginRemoteRepository {
+        return retrofit.create(LoginRemoteRepository::class.java)
     }
 }

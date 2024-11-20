@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -26,17 +27,18 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -75,14 +77,17 @@ fun LoginScreen(
     navController: NavHostController,
     name: String
 ) {
-    val state by viewModel.state.observeAsState(LoginState.Loading)
+    val state by viewModel.state.observeAsState(LoginState.Idle)
     val context = LocalContext.current
 
-    var username by remember { mutableStateOf(value = "") }
-    var password by remember { mutableStateOf(value = "") }
-    var showPassword by remember { mutableStateOf(value = true) }
-    var isUserNameEmpty by remember { mutableStateOf(value = username.isEmpty()) }
-    var isPasswordEmpty by remember { mutableStateOf(value = password.isEmpty()) }
+    val username = remember { mutableStateOf(value = "") }
+    val password = remember { mutableStateOf(value = "") }
+    val showPassword = remember { mutableStateOf(value = true) }
+    val isUserNameEmpty = remember { mutableStateOf(value = username.value.isEmpty()) }
+    val isPasswordEmpty = remember { mutableStateOf(value = password.value.isEmpty()) }
+    val isFormValid = username.value.isNotEmpty() && password.value.isNotEmpty()
+    val snackbarHostState = remember { SnackbarHostState() }
+
 
     val gradient = Brush.linearGradient(
         colors = listOf(
@@ -95,14 +100,7 @@ fun LoginScreen(
         is LoginState.Loading -> {
             CircularProgressIndicator()
         }
-
-        is LoginState.Success -> {
-
-            /** Navigation to Home is login success */
-            LaunchedEffect(Unit) {
-                navController.navigate(route = context.getString(R.string.home))
-            }
-
+        is LoginState.Idle -> {
             Surface(
                 modifier = Modifier.fillMaxSize(),
                 color = MaterialTheme.colorScheme.onSurface,
@@ -138,10 +136,10 @@ fun LoginScreen(
                         )
                         Spacer(modifier = Modifier.height(dimensionResource(R.dimen.minium_space_betwing_elements)))
                         TextField(
-                            value = username,
+                            value = username.value,
                             onValueChange = {
-                                username = it
-                                isUserNameEmpty = it.isEmpty()
+                                username.value = it
+                                isUserNameEmpty.value = it.isEmpty()
                             },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                             textStyle = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold),
@@ -213,10 +211,13 @@ fun LoginScreen(
                         )
                         Spacer(modifier = Modifier.height(dimensionResource(R.dimen.minium_space_betwing_elements)))
                         TextField(
-                            value = password,
-                            onValueChange = { password = it },
+                            value = password.value,
+                            onValueChange = {
+                                password.value = it
+                            },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                            visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
+                            visualTransformation = if (showPassword.value) VisualTransformation.None else
+                                PasswordVisualTransformation(),
                             textStyle = TextStyle(
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold,
@@ -291,22 +292,20 @@ fun LoginScreen(
                                 Icon(
                                     imageVector = Icons.Default.CheckCircle,
                                     contentDescription = stringResource(R.string.password_icon),
-                                    tint = if (isPasswordEmpty) Color.Gray else Color.Green
+                                    tint = if (isPasswordEmpty.value) Color.Gray else Color.Green
                                 )
                             },
                             trailingIcon = {
-                                IconButton(onClick = { showPassword = !showPassword }) {
-                                    val icon: ImageVector = if (showPassword) {
+                                IconButton(onClick = { showPassword.value = !showPassword.value }) {
+                                    val icon: ImageVector = if (showPassword.value) {
                                         ImageVector.vectorResource(id = R.drawable.baseline_visibility_off_24)
                                     } else {
                                         ImageVector.vectorResource(id = R.drawable.baseline_remove_red_eye_24)
                                     }
                                     Icon(
                                         imageVector = icon,
-                                        contentDescription = if (showPassword) stringResource(id = R.string.hide_password) else
-                                            stringResource(
-                                                id = R.string.show_password
-                                            ),
+                                        contentDescription = if (showPassword.value) stringResource(id = R.string.hide_password) else
+                                            stringResource(id = R.string.show_password),
                                     )
                                 }
                             },
@@ -315,9 +314,9 @@ fun LoginScreen(
                         Spacer(modifier = Modifier.height(20.dp))
                         Button(
                             onClick = {
-                                viewModel.login(username, password)
+                                viewModel.login(username.value, password.value)
                             },
-                            enabled = true,
+                            enabled = isFormValid,
                             interactionSource = remember { MutableInteractionSource() },
                             elevation = ButtonDefaults.buttonElevation(defaultElevation = 10.dp),
                             shape = MaterialTheme.shapes.large,
@@ -351,7 +350,11 @@ fun LoginScreen(
                 }
             }
         }
-
+        is LoginState.Success -> {
+            LaunchedEffect(Unit) {
+                navController.navigate(route = context.getString(R.string.home))
+            }
+        }
         is LoginState.Error -> {
             val errorMessage = when ((state as LoginState.Error).error) {
                 LoginPresenterError.UserNotFound.toString() -> "User not found"
@@ -367,8 +370,91 @@ fun LoginScreen(
 
             Text("Error: $errorMessage")
         }
+        is LoginState.NoConnection -> {
+            ShowToastMessage((state as LoginState.NoConnection).errorMessage)
+            ShowRetryButton(onRetry = {
+                viewModel.login(username.value, password.value)
+                }
+            )
+        }
+        is LoginState.TimeoutError -> {
+            ShowSnackBarMessage(snackbarHostState, (state as LoginState.TimeoutError).message)
+            ShowRetryButton(onRetry = {
+                viewModel.login(username.value, password.value)
+                }
+            )
+        }
+        is LoginState.Unauthorized -> {
+            ShowSnackBarMessage(snackbarHostState, (state as LoginState.Unauthorized).message)
+            ClearInputFields(username, password)
+            ShowRetryButton(onRetry = {
+                viewModel.login(username.value, password.value)
+                }
+            )
+        }
+        is LoginState.ValidationError -> {
+            ShowSnackBarMessage(snackbarHostState, (state as LoginState.ValidationError).message)
+            HighlightInvalidFields()
+        }
     }
 }
+
+@Composable
+fun HighlightInvalidFields() {
+    TODO("Not yet implemented")
+}
+
+@Composable
+fun ShowToastMessage(message: String) {
+    val context = LocalContext.current
+    LaunchedEffect(message) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+    }
+}
+
+
+@Composable
+fun ShowSnackBarMessage(snackbarHostState: SnackbarHostState, message: String) {
+    LaunchedEffect(message) {
+        snackbarHostState.showSnackbar(message)
+    }
+}
+
+@Composable
+fun ShowTextViewMessage(message: String) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = message,
+            style = TextStyle(
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.error
+            )
+        )
+    }
+}
+
+@Composable
+fun ClearInputFields(username: MutableState<String>, password: MutableState<String>) {
+    username.value = ""
+    password.value = ""
+}
+
+@Composable
+fun ShowRetryButton(onRetry: () -> Unit) {
+    Button(
+        onClick = onRetry,
+        modifier = Modifier.fillMaxWidth().padding(16.dp)
+    ) {
+        Text("Try Again")
+    }
+}
+
 
 @Preview(
     name = "login screen",
