@@ -8,4 +8,6 @@ import androidx.room.PrimaryKey
 data class RoomLogin(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     @ColumnInfo(name = "token") val name: String,
+    @ColumnInfo(name = "email") val email: String,
+    @ColumnInfo(name = "password") val password: String,
 )

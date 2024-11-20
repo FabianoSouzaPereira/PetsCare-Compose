@@ -30,6 +30,11 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.4.0"
+    }
+
     kotlinOptions {
         jvmTarget = "17"
     }
@@ -48,17 +53,15 @@ android {
 
 configurations.all {
     resolutionStrategy {
-        force("androidx.core:core:1.15.0")
-        force("androidx.navigation:navigation-common:2.5.1")
+//        force("androidx.core:core:1.15.0")
+//        force("androidx.navigation:navigation-common:2.5.1")
     }
 }
 
 
 dependencies {
     // Core Libraries
-    implementation(libs.androidx.core.ktx){
-        exclude(group = "com.android.support", module = "support-compat")
-    }
+    implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
 
@@ -75,9 +78,9 @@ dependencies {
     // Hilt
     implementation(libs.dagger.hilt)
     ksp(libs.dagger.hilt.compiler)
-    implementation(libs.hilt.viewmodel)
     ksp(libs.hilt.viewmodel.compiler)
     implementation(libs.hilt.navigation.compose)
+    implementation(libs.hilt.common)
 
     // Retrofit
     implementation(libs.retrofit)

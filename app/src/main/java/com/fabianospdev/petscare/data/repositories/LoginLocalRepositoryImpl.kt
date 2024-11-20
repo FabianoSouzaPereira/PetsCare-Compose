@@ -9,19 +9,19 @@ class LoginLocalRepositoryImpl @Inject constructor(
     private val loginDao: LoginDao
 ): LoginLocalRepository {
 
-    override suspend fun loginUser(username: String, password: String): Result<RoomLogin?>{
+    override suspend fun loginUser(username: String, password: String): RoomLogin? {
         return loginDao.login(username,password)
     }
 
-    override suspend fun insertUser(localLogin: RoomLogin): Result<RoomLogin> {
+    override suspend fun insertUser(localLogin: RoomLogin): Long {
         return loginDao.insert(localLogin)
     }
 
-    override suspend fun updateUser(localLogin: RoomLogin): Result<RoomLogin> {
+    override suspend fun updateUser(localLogin: RoomLogin): Int {
         return loginDao.update(localLogin)
     }
 
-    override suspend fun deleteUser(localLogin: RoomLogin): Result<RoomLogin> {
+    override suspend fun deleteUser(localLogin: RoomLogin): Int {
         return loginDao.delete(localLogin)
     }
 }

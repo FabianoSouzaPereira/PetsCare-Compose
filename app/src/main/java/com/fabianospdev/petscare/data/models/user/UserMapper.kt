@@ -1,9 +1,9 @@
 package com.fabianospdev.petscare.data.models.user
 
 import com.fabianospdev.petscare.data.models.user.local.RoomUser
-import com.fabianospdev.petscare.data.models.user.remote.RemoteUser
+import com.fabianospdev.petscare.data.models.user.remote.RemoteUserModel
 
-fun RemoteUser.toRoomUser(): RoomUser {
+fun RemoteUserModel.toRoomUser(): RoomUser {
     return RoomUser(
         id = this.id,
         name = this.name,

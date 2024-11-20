@@ -9,15 +9,16 @@ import com.fabianospdev.petscare.data.models.login.RoomLogin
 
 @Dao
 interface LoginDao {
-    @Query(value = "SELECT * FROM login")
-    suspend fun login(username: String, password: String): Result<RoomLogin>
+
+    @Query(value = "SELECT * FROM login WHERE email = :username and password = :password LIMIT 1")
+    suspend fun login(username: String, password: String): RoomLogin?
 
     @Insert
-    suspend fun insert(user: RoomLogin): Result<RoomLogin>
+    suspend fun insert(user: RoomLogin): Long
 
     @Update
-    suspend fun update(user: RoomLogin): Result<RoomLogin>
+    suspend fun update(user: RoomLogin): Int
 
     @Delete
-    suspend fun delete(user: RoomLogin): Result<RoomLogin>
+    suspend fun delete(user: RoomLogin): Int
 }

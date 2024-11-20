@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.fabianospdev.petscare.domain.exceptions.UserNotFoundException
 import com.fabianospdev.petscare.domain.usecases.user.UserRemoteUsecase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -23,7 +24,10 @@ class LoginViewModel @Inject constructor(
                 val user = getUserUseCase.getUser(username, password)
                 _state.value = LoginState.Success(user)
             } catch (e: Exception) {
-                _state.value = LoginState.Error("Login failed")
+                _state.value = when (e) {
+                    is UserNotFoundException -> LoginState.Error(LoginPresenterError.UserNotFound.toString())
+                    else -> LoginState.Error(LoginPresenterError.LoginFailed.toString())
+                }
             }
         }
     }

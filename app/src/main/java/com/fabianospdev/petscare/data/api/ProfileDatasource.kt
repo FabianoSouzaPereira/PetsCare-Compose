@@ -4,7 +4,7 @@ package com.fabianospdev.petscare.data.api
 
 
 import com.fabianospdev.petscare.data.models.profile.RemoteProfile
-import com.fabianospdev.petscare.data.models.user.remote.RemoteUser
+import com.fabianospdev.petscare.data.models.user.remote.RemoteUserModel
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -30,6 +30,6 @@ interface ProfileDatasource {
     suspend fun deleteProfile(@Path("id") id: Int): Response<Void>
 
     @GET("profile/user")
-    suspend fun getUserDataProfile(@Header("token") token: String): Response<RemoteUser>
+    suspend fun getUserDataProfile(@Header("token") token: String): Response<RemoteUserModel>
 }
 

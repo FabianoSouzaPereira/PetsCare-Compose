@@ -2,7 +2,7 @@ package com.fabianospdev.petscare.data.repositories
 
 import com.fabianospdev.petscare.data.dao.UserDao
 import com.fabianospdev.petscare.data.models.user.local.RoomUser
-import com.fabianospdev.petscare.data.models.user.remote.RemoteUser
+import com.fabianospdev.petscare.data.models.user.remote.RemoteUserModel
 import com.fabianospdev.petscare.data.models.user.toRoomUser
 import com.fabianospdev.petscare.domain.repositories.UserLocalRepository
 import javax.inject.Inject
@@ -28,7 +28,7 @@ class UserLocalRepositoryImpl @Inject constructor(
         userDao.deleteUser(user = user)
     }
 
-    suspend fun saveUserToRoom(remoteUser: RemoteUser) {
+    suspend fun saveUserToRoom(remoteUser: RemoteUserModel) {
         val roomUser = remoteUser.toRoomUser()
         userDao.insertUser(roomUser)
     }

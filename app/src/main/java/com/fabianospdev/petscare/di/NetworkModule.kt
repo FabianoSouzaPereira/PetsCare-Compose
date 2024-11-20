@@ -1,16 +1,13 @@
 package com.fabianospdev.petscare.di
 
+/** NetworkModule is the same that Retrofit initializer */
+
 import com.fabianospdev.petscare.data.api.LoginDatasource
 import com.fabianospdev.petscare.data.api.ProfileDatasource
 import com.fabianospdev.petscare.data.api.SettingsDatasource
 import com.fabianospdev.petscare.data.api.UserDatasource
-import com.fabianospdev.petscare.data.dao.LoginDao
-import com.fabianospdev.petscare.data.dao.ProfileDao
-import com.fabianospdev.petscare.data.dao.SettingsDao
-import com.fabianospdev.petscare.data.dao.UserDao
 import com.fabianospdev.petscare.domain.repositories.ProfileRemoteRepository
 import com.fabianospdev.petscare.domain.repositories.SettingsRepository
-import com.fabianospdev.petscare.domain.repositories.UserLocalRepository
 import com.fabianospdev.petscare.domain.repositories.UserRemoteRepository
 import dagger.Module
 import dagger.Provides
@@ -30,7 +27,7 @@ object NetworkModule {
     @Singleton
     fun provideRetrofit(): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("https://api.example.com/")
+            .baseUrl("https://api.petscare/")
             .addConverterFactory(GsonConverterFactory.create())
             .client(provideOkHttpClient())
             .build()
@@ -70,39 +67,10 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideLoginDao(retrofit: Retrofit): LoginDao {
-        return retrofit.create(LoginDao::class.java)
-    }
-
-    @Provides
-    @Singleton
-    fun provideProfileDao(retrofit: Retrofit): ProfileDao {
-        return retrofit.create(ProfileDao::class.java)
-    }
-
-    @Provides
-    @Singleton
-    fun provideSettingsDao(retrofit: Retrofit): SettingsDao {
-        return retrofit.create(SettingsDao::class.java)
-    }
-
-    @Provides
-    @Singleton
-    fun provideUserDao(retrofit: Retrofit): UserDao {
-        return retrofit.create(UserDao::class.java)
-    }
-
-    @Provides
-    @Singleton
     fun provideUserRemoteRepository(retrofit: Retrofit): UserRemoteRepository {
         return retrofit.create(UserRemoteRepository::class.java)
     }
 
-    @Provides
-    @Singleton
-    fun provideUserLocalRepository(retrofit: Retrofit): UserLocalRepository {
-        return retrofit.create(UserLocalRepository::class.java)
-    }
 
     @Provides
     @Singleton

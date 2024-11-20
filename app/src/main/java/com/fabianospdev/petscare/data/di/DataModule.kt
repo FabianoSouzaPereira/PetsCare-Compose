@@ -9,21 +9,15 @@ import com.fabianospdev.petscare.data.dao.ProfileDao
 import com.fabianospdev.petscare.data.dao.SettingsDao
 import com.fabianospdev.petscare.data.dao.UserDao
 import com.fabianospdev.petscare.data.repositories.LoginLocalRepositoryImpl
-import com.fabianospdev.petscare.data.repositories.LoginRemoteRepositoryImpl
 import com.fabianospdev.petscare.data.repositories.ProfileLocalRepositoryImpl
-import com.fabianospdev.petscare.data.repositories.ProfileRemoteRepositoryImpl
 import com.fabianospdev.petscare.data.repositories.SettingsLocalRepositoryImpl
 import com.fabianospdev.petscare.data.repositories.SettingsRepositoryImpl
 import com.fabianospdev.petscare.data.repositories.UserLocalRepositoryImpl
-import com.fabianospdev.petscare.data.repositories.UserRemoteRepositoryImpl
 import com.fabianospdev.petscare.domain.repositories.LoginLocalRepository
-import com.fabianospdev.petscare.domain.repositories.LoginRemoteRepository
 import com.fabianospdev.petscare.domain.repositories.ProfileLocalRepository
-import com.fabianospdev.petscare.domain.repositories.ProfileRemoteRepository
 import com.fabianospdev.petscare.domain.repositories.SettingsLocalRepository
 import com.fabianospdev.petscare.domain.repositories.SettingsRepository
 import com.fabianospdev.petscare.domain.repositories.UserLocalRepository
-import com.fabianospdev.petscare.domain.repositories.UserRemoteRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -82,29 +76,16 @@ object DataModule {
     }
 
     @Provides
-    fun provideUserRepository(userDatasource: UserDatasource, userDao: UserDao): UserRemoteRepository {
-        return UserRemoteRepositoryImpl(userDatasource)
-    }
-
-    @Provides
     fun provideUserLocalRepository(userDao: UserDao): UserLocalRepository {
         return UserLocalRepositoryImpl(userDao)
     }
 
-    @Provides
-    fun provideLoginRemoteRepository(loginDatasource: LoginDatasource): LoginRemoteRepository {
-        return LoginRemoteRepositoryImpl(loginDatasource)
-    }
 
     @Provides
     fun provideLoginLocalRepository(loginDao: LoginDao): LoginLocalRepository {
         return LoginLocalRepositoryImpl(loginDao)
     }
 
-    @Provides
-    fun provideProfileRemoteRepository(profileDatasource: ProfileDatasource): ProfileRemoteRepository {
-        return ProfileRemoteRepositoryImpl(profileDatasource)
-    }
 
     @Provides
     fun provideProfileLocalRepository(profileDao: ProfileDao): ProfileLocalRepository {

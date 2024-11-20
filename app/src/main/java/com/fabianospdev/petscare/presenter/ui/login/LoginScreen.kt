@@ -1,5 +1,6 @@
 package com.fabianospdev.petscare.presenter.ui.login
 
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -30,6 +31,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -63,6 +65,8 @@ import androidx.navigation.compose.rememberNavController
 import com.fabianospdev.petscare.R
 import com.fabianospdev.petscare.presenter.ui.theme.AppTheme
 import com.fabianospdev.petscare.presenter.ui.utils.LoadFontsFamily
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 
 @Composable
@@ -93,6 +97,12 @@ fun LoginScreen(
         }
 
         is LoginState.Success -> {
+
+            /** Navigation to Home is login success */
+            LaunchedEffect(Unit) {
+                navController.navigate(route = context.getString(R.string.home))
+            }
+
             Surface(
                 modifier = Modifier.fillMaxSize(),
                 color = MaterialTheme.colorScheme.onSurface,
@@ -304,7 +314,9 @@ fun LoginScreen(
                         )
                         Spacer(modifier = Modifier.height(20.dp))
                         Button(
-                            onClick = { navController.navigate(route = context.getString(R.string.home)) },
+                            onClick = {
+                                viewModel.login(username, password)
+                            },
                             enabled = true,
                             interactionSource = remember { MutableInteractionSource() },
                             elevation = ButtonDefaults.buttonElevation(defaultElevation = 10.dp),
@@ -341,7 +353,19 @@ fun LoginScreen(
         }
 
         is LoginState.Error -> {
-            Text("Error: ${(state as LoginState.Error).message}")
+            val errorMessage = when ((state as LoginState.Error).error) {
+                LoginPresenterError.UserNotFound.toString() -> "User not found"
+                LoginPresenterError.LoginFailed.toString() -> "Login Failed"
+                else -> "Unknown error"
+            }
+
+            LaunchedEffect(errorMessage) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            Text("Error: $errorMessage")
         }
     }
 }

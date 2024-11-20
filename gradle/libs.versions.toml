@@ -1,12 +1,12 @@
 [versions]
 agp = "8.7.2"
-kotlin = "2.0.20"
+kotlin = "2.0.21"
 coreKtx = "1.15.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 navigationTest = "2.8.4"
 espressoCore = "3.6.1"
-mockito = "5.14.2"
+mockito = "5.2.0"
 mokitoKotlinVerion = "5.4.0"
 robolectricRoboEletric = "4.14"
 lifecycleRuntimeKtx = "2.8.7"
@@ -15,7 +15,6 @@ composeBom = "2024.11.00"
 
 hiltCommon = "1.2.0"
 hilt = "2.52"
-hilt-viewmodel = "1.0.0-alpha03"
 hilt-compiler = "1.2.0"
 hilt-navigation-compose = "1.2.0"
 
@@ -45,7 +44,6 @@ roboeletric = { group = "org.robolectric", name = "robolectric", version.ref = "
 ## Hilt ##
 dagger-hilt = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 dagger-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
-hilt-viewmodel = { module = "androidx.hilt:hilt-lifecycle-viewmodel", version.ref = "hilt-viewmodel" }
 hilt-viewmodel-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hilt-compiler" }
 hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref ="hilt-navigation-compose" }
 hilt-common = { group = "androidx.hilt", name = "hilt-common", version.ref = "hiltCommon" }
