@@ -30,7 +30,7 @@ class LoginViewModel @Inject constructor(
                 if (result.isSuccess) {
                     _state.value = LoginState.Success(result)
                 } else {
-                    _state.value = LoginState.Error(LoginPresenterError.LoginFailed.toString())
+                    _state.value = LoginState.Error(LoginPresenterError.LoginFailed.message)
                 }
             } catch (e: Exception) {
                 _state.value = when (e) {
