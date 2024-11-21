@@ -3,6 +3,7 @@
 * Kotlin
 * JetPack Compose
 * Coroutines
+* KSP - replacing - old kapt
 * Hilt - Dagger
 * Retrofit
 * Room

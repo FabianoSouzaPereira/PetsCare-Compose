@@ -11,12 +11,10 @@ import com.fabianospdev.petscare.data.dao.UserDao
 import com.fabianospdev.petscare.data.repositories.LoginLocalRepositoryImpl
 import com.fabianospdev.petscare.data.repositories.ProfileLocalRepositoryImpl
 import com.fabianospdev.petscare.data.repositories.SettingsLocalRepositoryImpl
-import com.fabianospdev.petscare.data.repositories.SettingsRepositoryImpl
 import com.fabianospdev.petscare.data.repositories.UserLocalRepositoryImpl
 import com.fabianospdev.petscare.domain.repositories.LoginLocalRepository
 import com.fabianospdev.petscare.domain.repositories.ProfileLocalRepository
 import com.fabianospdev.petscare.domain.repositories.SettingsLocalRepository
-import com.fabianospdev.petscare.domain.repositories.SettingsRepository
 import com.fabianospdev.petscare.domain.repositories.UserLocalRepository
 import dagger.Module
 import dagger.Provides
@@ -71,21 +69,14 @@ object DataModule {
     /**  REPOSITORIES  **/
 
     @Provides
-    fun provideSettingsRepository(settingsDao: SettingsDao): SettingsRepository {
-        return SettingsRepositoryImpl(settingsDao)
-    }
-
-    @Provides
     fun provideUserLocalRepository(userDao: UserDao): UserLocalRepository {
         return UserLocalRepositoryImpl(userDao)
     }
-
 
     @Provides
     fun provideLoginLocalRepository(loginDao: LoginDao): LoginLocalRepository {
         return LoginLocalRepositoryImpl(loginDao)
     }
-
 
     @Provides
     fun provideProfileLocalRepository(profileDao: ProfileDao): ProfileLocalRepository {
