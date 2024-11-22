@@ -8,6 +8,9 @@
       <SelectionState runConfigName="AndroidProjects.PetsCare.app">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
+      <SelectionState runConfigName="fsp.AndroidProjects.PetsCare.app">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
     </selectionStates>
   </component>
 </project>

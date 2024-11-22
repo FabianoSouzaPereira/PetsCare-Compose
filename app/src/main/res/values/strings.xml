@@ -9,4 +9,7 @@
     <string name="password_icon">Password Icon</string>
     <string name="email_email_com">email@email.com</string>
     <string name="q_nm_44u">Q@nm#44u</string>
+    <string name="try_again">Try Again</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
 </resources>

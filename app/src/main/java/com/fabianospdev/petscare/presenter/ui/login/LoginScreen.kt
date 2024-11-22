@@ -556,17 +556,26 @@ fun ClearInputFields(username: MutableState<String>, password: MutableState<Stri
 
 @Composable
 fun ShowRetryButton(onRetry: () -> Unit) {
-    Box(
-        modifier = Modifier.fillMaxSize()
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Bottom
     ) {
-        Button(
-            onClick = onRetry,
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .align(Alignment.BottomCenter)
-                .padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 60.dp)
+                .height(120.dp)
         ) {
-            Text("Try Again")
+            Button(
+                onClick = onRetry,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .align(Alignment.BottomCenter)
+                    .padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 60.dp)
+            ) {
+                Text(stringResource(R.string.try_again))
+            }
         }
     }
 }
