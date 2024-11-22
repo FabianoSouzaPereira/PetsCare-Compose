@@ -38,6 +38,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -94,6 +95,7 @@ fun LoginScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val focusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
+    val showRetryLimitReached by viewModel.showRetryLimitReached.collectAsState()
 
 
     val gradient = Brush.linearGradient(
@@ -108,6 +110,11 @@ fun LoginScreen(
             CircularProgressIndicator()
         }
         is LoginState.Idle -> {
+            if (showRetryLimitReached) {
+                Toast.makeText(LocalContext.current, stringResource(R.string.attempt_limit_reached), Toast.LENGTH_SHORT).show()
+                viewModel.resetRetryLimitNotification()
+            }
+
             Surface(
                 modifier = Modifier.fillMaxSize(),
                 color = MaterialTheme.colorScheme.onSurface,

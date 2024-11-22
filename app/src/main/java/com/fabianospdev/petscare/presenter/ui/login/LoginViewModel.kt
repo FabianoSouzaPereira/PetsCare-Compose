@@ -11,6 +11,7 @@ import com.fabianospdev.petscare.domain.exceptions.UserNotFoundException
 import com.fabianospdev.petscare.domain.exceptions.ValidationException
 import com.fabianospdev.petscare.domain.usecases.login.LoginRemoteUsecase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -21,12 +22,17 @@ class LoginViewModel @Inject constructor(
     private val retryController: RetryController
 ) : ViewModel() {
     val isRetryEnabled: StateFlow<Boolean> get() = retryController.isRetryEnabled
+    private val _showRetryLimitReached = MutableStateFlow(false)
+    val showRetryLimitReached: StateFlow<Boolean> get() = _showRetryLimitReached
 
     private val _state = MutableLiveData<LoginState>(LoginState.Idle)
     val state: LiveData<LoginState> get() = _state
 
     fun login(username: String, password: String){
-        if (!retryController.isRetryEnabled.value) return
+        if (!retryController.isRetryEnabled.value) {
+            _showRetryLimitReached.value = true
+            return
+        }
 
         _state.value = LoginState.Loading
 
@@ -52,6 +58,10 @@ class LoginViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun resetRetryLimitNotification() {
+        _showRetryLimitReached.value = false
     }
 
     fun resetState() {
