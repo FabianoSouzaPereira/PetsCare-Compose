@@ -383,9 +383,9 @@ fun LoginScreen(
         }
         is LoginState.Error -> {
             val errorMessage = when ((state as LoginState.Error).error) {
-                LoginPresenterError.UserNotFound.toString() -> "User not found"
-                LoginPresenterError.LoginFailed.toString() -> "Login Failed"
-                else -> "Unknown error"
+                LoginPresenterError.UserNotFound.toString() -> LoginPresenterError.UserNotFound.message
+                LoginPresenterError.LoginFailed.toString() -> LoginPresenterError.LoginFailed.message
+                else -> LoginPresenterError.UnknownError.message
             }
 
             ShowDialog(errorMessage, gradient) {
@@ -490,7 +490,7 @@ fun ShowDialog(message: String, gradient: Brush, onDismiss: () -> Unit) {
                 Text(
                     text = "Something went wrong",
                     modifier = Modifier.align(Alignment.Center),
-                    fontSize = 22.sp,
+                    fontSize = MaterialTheme.typography.titleMedium.fontSize,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.error,
                     fontStyle = FontStyle.Normal
