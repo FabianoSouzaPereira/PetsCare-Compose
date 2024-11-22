@@ -11,6 +11,7 @@ import com.fabianospdev.petscare.domain.exceptions.UserNotFoundException
 import com.fabianospdev.petscare.domain.exceptions.ValidationException
 import com.fabianospdev.petscare.domain.usecases.login.LoginRemoteUsecase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -38,6 +39,8 @@ class LoginViewModel @Inject constructor(
 
         viewModelScope.launch {
             try {
+                delay(2000) //todo remove it
+
                 val result = usecase.login(username, password)
                 if (result.isSuccess) {
                     _state.value = LoginState.Success(result)
@@ -62,6 +65,7 @@ class LoginViewModel @Inject constructor(
 
     fun resetRetryLimitNotification() {
         _showRetryLimitReached.value = false
+        retryController.resetRetryCount()
     }
 
     fun resetState() {

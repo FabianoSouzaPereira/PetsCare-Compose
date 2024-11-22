@@ -25,6 +25,8 @@ import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -43,6 +45,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -65,16 +68,19 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Popup
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.fabianospdev.petscare.R
 import com.fabianospdev.petscare.presenter.ui.theme.AppTheme
 import com.fabianospdev.petscare.presenter.ui.utils.LoadFontsFamily
+import kotlinx.coroutines.delay
 
 
 @Composable
@@ -96,8 +102,7 @@ fun LoginScreen(
     val focusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
     val showRetryLimitReached by viewModel.showRetryLimitReached.collectAsState()
-
-
+    var showPopup by remember { mutableStateOf(false) }
     val gradient = Brush.linearGradient(
         colors = listOf(
             MaterialTheme.colorScheme.primary,
@@ -105,16 +110,25 @@ fun LoginScreen(
         )
     )
 
+    if (showRetryLimitReached && !showPopup) {
+        showPopup = true
+        viewModel.resetRetryLimitNotification()
+    }
+
+    if (showPopup) {
+        ShowPopup(
+            message = stringResource(R.string.attempt_limit_reached),
+            onDismiss = { showPopup = false },
+            imageResId = R.mipmap.ic_launcher_foreground
+        )
+        viewModel.resetState()
+    }
+
     when (state) {
         is LoginState.Loading -> {
             CircularProgressIndicator()
         }
         is LoginState.Idle -> {
-            if (showRetryLimitReached) {
-                Toast.makeText(LocalContext.current, stringResource(R.string.attempt_limit_reached), Toast.LENGTH_SHORT).show()
-                viewModel.resetRetryLimitNotification()
-            }
-
             Surface(
                 modifier = Modifier.fillMaxSize(),
                 color = MaterialTheme.colorScheme.onSurface,
@@ -587,6 +601,58 @@ fun ShowRetryButton(onRetry: () -> Unit) {
     }
 }
 
+@Composable
+fun ShowPopup(
+    message: String,
+    onDismiss: () -> Unit,
+    imageResId: Int
+) {
+    Popup(
+        alignment = Alignment.Center,
+        onDismissRequest = onDismiss
+    ) {
+        Card(
+            shape = RoundedCornerShape(24.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 12.dp),
+            modifier = Modifier
+                .padding(32.dp)
+                .width(320.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .background(MaterialTheme.colorScheme.surface)
+                    .padding(24.dp)
+                    .fillMaxWidth(),
+            ) {
+                Image(
+                    painter = painterResource(id = imageResId),
+                    contentDescription = "Popup Image",
+                    modifier = Modifier
+                        .size(160.dp)
+                        .align(Alignment.CenterHorizontally)
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Box(
+                    modifier = Modifier.fillMaxWidth()
+                ){
+                    Text(
+                        text = message,
+                        modifier = Modifier.fillMaxWidth(),
+                        style = MaterialTheme.typography.titleLarge,
+                        color =  MaterialTheme.colorScheme.onSurface,
+                        textAlign = TextAlign.Center
+                    )
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+                LaunchedEffect(Unit) {
+                    delay(3000)
+                    onDismiss()
+                }
+            }
+        }
+    }
+}
+
 
 @Preview(
     name = "login screen",
@@ -596,7 +662,17 @@ fun ShowRetryButton(onRetry: () -> Unit) {
 )
 @Composable
 fun DefaultLogin() {
+    /** This preview uses a ViewModel. ViewModels often trigger operations not supported by Compose Preview,
+     * such as database access, I/ O operations, or network requests. You can read more about preview limitations
+     * in our external documentation.
+     */
     AppTheme {
-        LoginScreen(navController = rememberNavController(), name = stringResource(R.string.login))
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.onSurface,
+            tonalElevation = 5.dp
+        ) {
+            LoginScreen(navController = rememberNavController(), name = stringResource(R.string.login))
+        }
     }
 }
