@@ -41,7 +41,6 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -84,7 +83,6 @@ import com.fabianospdev.petscare.presenter.ui.theme.AppTheme
 import com.fabianospdev.petscare.presenter.ui.utils.LoadFontsFamily
 import kotlinx.coroutines.delay
 
-
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel(),
@@ -94,12 +92,16 @@ fun LoginScreen(
     val state by viewModel.state.observeAsState(LoginState.Idle)
     val context = LocalContext.current
 
-    val username = remember { mutableStateOf(value = "") }
-    val password = remember { mutableStateOf(value = "") }
-    val showPassword = remember { mutableStateOf(value = true) }
-    val isUserNameEmpty = remember { mutableStateOf(value = username.value.isEmpty()) }
-    val isPasswordEmpty = remember { mutableStateOf(value = password.value.isEmpty()) }
-    val isFormValid = username.value.isNotEmpty() && password.value.isNotEmpty()
+    /** Observing the ViewModel state **/
+    val username by remember { viewModel.username }
+    val password by remember { viewModel.password }
+
+    /** Field validation (calculated in a derived way) **/
+    val isUserNameEmpty by remember { viewModel.isUserNameEmpty }
+    val isPasswordEmpty by remember { viewModel.isPasswordEmpty }
+    val isFormValid by remember { viewModel.isFormValid }
+
+    val showPassword = remember { mutableStateOf(value = false) }
     val snackbarHostState = remember { SnackbarHostState() }
     val focusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -119,6 +121,7 @@ fun LoginScreen(
 
     if (showPopup) {
         ShowPopup(
+            viewModel = viewModel,
             message = stringResource(R.string.attempt_limit_reached),
             onDismiss = { showPopup = false },
             imageResId = R.mipmap.ic_launcher_foreground
@@ -128,26 +131,33 @@ fun LoginScreen(
 
     when (state) {
         is LoginState.Loading -> {
-            CircularProgressIndicator()
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.White),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
         }
         is LoginState.Idle -> {
             Surface(
                 modifier = Modifier.fillMaxSize(),
                 color = MaterialTheme.colorScheme.onSurface,
                 tonalElevation = 5.dp
-            ) {
+            ){
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
                         .background(brush = gradient)
-                ) {
+                ){
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(16.dp),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
+                    ){
                         Image(
                             painter = painterResource(id = R.mipmap.ic_launcher_foreground),
                             contentDescription = "logo",
@@ -166,12 +176,11 @@ fun LoginScreen(
                         )
                         Spacer(modifier = Modifier.height(dimensionResource(R.dimen.minium_space_betwing_elements)))
                         TextField(
-                            value = username.value,
+                            value = username,
                             onValueChange = {
-                                username.value = it
-                                isUserNameEmpty.value = it.isEmpty()
+                                viewModel.username.value = it
                             },
-                            label = { Text("Email") },
+                            label = { Text(stringResource(R.string.email)) },
                             keyboardOptions = KeyboardOptions.Default.copy(
                                 keyboardType = KeyboardType.Text,
                                 imeAction = ImeAction.Next
@@ -187,7 +196,7 @@ fun LoginScreen(
                                 .padding(20.dp, 20.dp, 20.dp, 1.dp)
                                 .border(
                                     dimensionResource(R.dimen.textfield_border_size),
-                                    MaterialTheme.colorScheme.primary,
+                                    MaterialTheme.colorScheme.onPrimary,
                                     shape = RoundedCornerShape(dimensionResource(R.dimen.textfield_rounded_corner_shape))
                                 )
                                 .clip(RoundedCornerShape(dimensionResource(R.dimen.textfield_rounded_corner_shape)))
@@ -249,13 +258,12 @@ fun LoginScreen(
                             ),
                             maxLines = 1
                         )
-                        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.minium_space_betwing_elements)))
                         TextField(
-                            value = password.value,
+                            value = password,
                             onValueChange = {
-                                password.value = it
+                                viewModel.password.value = it
                             },
-                            label = { Text("Password") },
+                            label = { Text(stringResource(R.string.password)) },
                             keyboardOptions = KeyboardOptions.Default.copy(
                                 imeAction = ImeAction.Done
                             ),
@@ -273,10 +281,10 @@ fun LoginScreen(
                             ),
                             shape = RoundedCornerShape(25),
                             modifier = Modifier
-                                .padding(20.dp, 3.dp, 20.dp, 20.dp)
+                                .padding(20.dp, 6.dp, 20.dp, 20.dp)
                                 .border(
                                     dimensionResource(R.dimen.textfield_border_size),
-                                    MaterialTheme.colorScheme.primary,
+                                    MaterialTheme.colorScheme.onPrimary,
                                     shape = RoundedCornerShape(16.dp)
                                 )
                                 .clip(RoundedCornerShape(16.dp))
@@ -341,20 +349,21 @@ fun LoginScreen(
                                 Icon(
                                     imageVector = Icons.Default.CheckCircle,
                                     contentDescription = stringResource(R.string.password_icon),
-                                    tint = if (isPasswordEmpty.value) Color.Gray else Color.Green
+                                    tint = if (isPasswordEmpty) Color.Gray else Color.Green
                                 )
                             },
                             trailingIcon = {
                                 IconButton(onClick = { showPassword.value = !showPassword.value }) {
                                     val icon: ImageVector = if (showPassword.value) {
-                                        ImageVector.vectorResource(id = R.drawable.baseline_visibility_off_24)
-                                    } else {
                                         ImageVector.vectorResource(id = R.drawable.baseline_remove_red_eye_24)
+                                    } else {
+                                        ImageVector.vectorResource(id = R.drawable.baseline_visibility_off_24)
                                     }
                                     Icon(
                                         imageVector = icon,
                                         contentDescription = if (showPassword.value) stringResource(id = R.string.hide_password) else
                                             stringResource(id = R.string.show_password),
+                                        tint = if (showPassword.value) Color.Blue else Color.Gray
                                     )
                                 }
                             },
@@ -363,7 +372,7 @@ fun LoginScreen(
                         Spacer(modifier = Modifier.height(20.dp))
                         Button(
                             onClick = {
-                                viewModel.login(username.value, password.value)
+                                viewModel.login(username, password)
                             },
                             enabled = isFormValid,
                             interactionSource = remember { MutableInteractionSource() },
@@ -406,7 +415,7 @@ fun LoginScreen(
             }
         }
         is LoginState.Success -> {
-            LaunchedEffect(Unit) {
+            LaunchedEffect(Unit){
                 navController.navigate(route = context.getString(R.string.home))
             }
         }
@@ -417,20 +426,16 @@ fun LoginScreen(
                 else -> LoginPresenterError.UnknownError.message
             }
 
-            ClearInputFields(username = username, password = password)
-            ShowRetryButton(
-                viewModel = viewModel,
-                errorMessage = errorMessage,
-                gradient = gradient,
-                onRetry = { viewModel.login(username.value, password.value) }
-            )
+            ShowRetryButton(viewModel = viewModel, errorMessage = errorMessage,gradient = gradient, onRetry = {
+                viewModel.login(username, password)
+            })
         }
         is LoginState.NoConnection -> {
             ShowRetryButton(
                 viewModel = viewModel,
                 errorMessage = (state as LoginState.NoConnection).errorMessage,
                 gradient = gradient,
-                onRetry = {  viewModel.login(username.value, password.value) }
+                onRetry = {  viewModel.login(username, password) }
             )
         }
         is LoginState.TimeoutError -> {
@@ -438,7 +443,7 @@ fun LoginScreen(
                 viewModel = viewModel,
                 errorMessage = (state as LoginState.TimeoutError).message,
                 gradient = gradient,
-                onRetry = { viewModel.login(username.value, password.value) }
+                onRetry = { viewModel.login(username, password) }
             )
         }
         is LoginState.Unauthorized -> {
@@ -447,7 +452,7 @@ fun LoginScreen(
                 viewModel = viewModel,
                 errorMessage = (state as LoginState.Unauthorized).message,
                 gradient = gradient,
-                onRetry = { viewModel.login(username.value, password.value) }
+                onRetry = { viewModel.login(username, password) }
             )
         }
         is LoginState.ValidationError -> {
@@ -456,6 +461,7 @@ fun LoginScreen(
         }
     }
 }
+
 
 @Composable
 fun HighlightInvalidFields() {
@@ -469,7 +475,6 @@ fun ShowToastMessage(message: String) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 }
-
 
 @Composable
 fun ShowSnackBarMessage(snackbarHostState: SnackbarHostState, message: String) {
@@ -498,17 +503,15 @@ fun ShowTextViewMessage(message: String) {
 }
 
 @Composable
-fun ShowDialog(message: String, gradient: Brush, onDismiss: () -> Unit) {
-    val context = LocalContext.current
-
+fun ShowDialog(message: String, gradient: Brush, onDismiss: () -> Unit){
     AlertDialog(
         modifier = Modifier
             .size(width = 300.dp, height = 300.dp)
-            .clip(RoundedCornerShape(22.dp))
+            .clip(RoundedCornerShape(dimensionResource(R.dimen.alert_clip_rounded_corner_shape)))
             .background(gradient)
             .border(
                 BorderStroke(
-                    width = 4.dp,
+                    width = dimensionResource(R.dimen.alert_border_border_stroke),
                     color = MaterialTheme.colorScheme.primary
                 ),
                 shape = RoundedCornerShape(22.dp)
@@ -531,7 +534,7 @@ fun ShowDialog(message: String, gradient: Brush, onDismiss: () -> Unit) {
         text = {
             Column(
                 modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(20.dp)
+                verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.alert_border_verticalArrangement))
             ) {
                 Text(
                     text = "The following error occurred:",
@@ -580,12 +583,6 @@ fun ShowDialog(message: String, gradient: Brush, onDismiss: () -> Unit) {
 
 
 @Composable
-fun ClearInputFields(username: MutableState<String>, password: MutableState<String>) {
-    username.value = ""
-    password.value = ""
-}
-
-@Composable
 fun ShowRetryButton(
     viewModel: LoginViewModel,
     errorMessage: String,
@@ -594,7 +591,7 @@ fun ShowRetryButton(
 ) {
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color =  MaterialTheme.colorScheme.onSurface,
+        color =  MaterialTheme.colorScheme.onSurfaceVariant,
         tonalElevation = 5.dp
     ) {
         Column(
@@ -605,16 +602,20 @@ fun ShowRetryButton(
             verticalArrangement = Arrangement.Bottom
         ) {
             Box(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
                     .fillMaxHeight(0.6f)
                     .padding(16.dp)
             ) {
                 OutlinedCard(
                     colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.errorContainer,
+                        containerColor = MaterialTheme.colorScheme.error,
+                        contentColor = MaterialTheme.colorScheme.onError
                     ),
                     border = BorderStroke(2.dp, MaterialTheme.colorScheme.onTertiary),
-                    modifier = Modifier.fillMaxWidth().padding(16.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
                 ) {
                     Column(
                         modifier = Modifier
@@ -622,22 +623,22 @@ fun ShowRetryButton(
                             .padding(16.dp)
                     ) {
                         Text(
-                            text = "Something wrong!!",
+                            text = stringResource(R.string.something_wrong),
                             fontSize = with(LocalDensity.current) {
                                 dimensionResource(id = R.dimen.title_font_text_size).value.sp
                             },
                             fontFamily = LoadFontsFamily.karlaFamily,
                             fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.tertiary,
+                            color = MaterialTheme.colorScheme.onError,
                             fontStyle = FontStyle.Normal,
                             style = MaterialTheme.typography.titleSmall
                         )
                         Spacer(modifier = Modifier.height(20.dp))
 
-                        Text(text = errorMessage)
+                        Text(text = stringResource(R.string.the_problem_reported_was, errorMessage))
                         Spacer(modifier = Modifier.height(16.dp))
 
-                        Text(text = "Break time")
+                        Text(text = stringResource(R.string.please_try_again_later_but_if_the_problem_persists_report_the_problem_to_your_service_provider))
                         Spacer(modifier = Modifier.height(25.dp))
                     }
                 }
@@ -680,7 +681,10 @@ fun ShowRetryButton(
                     .height(80.dp)
             ) {
                 Button(
-                    onClick = { viewModel.resetState() },
+                    onClick = {
+                        viewModel.clearInputFields()
+                        viewModel.resetState()
+                    },
                     modifier = Modifier
                         .width(dimensionResource(R.dimen.button_width_medium))
                         .align(Alignment.BottomCenter)
@@ -711,6 +715,7 @@ fun ShowRetryButton(
 
 @Composable
 fun ShowPopup(
+    viewModel: LoginViewModel,
     message: String,
     onDismiss: () -> Unit,
     imageResId: Int
@@ -754,6 +759,7 @@ fun ShowPopup(
                 Spacer(modifier = Modifier.height(16.dp))
                 LaunchedEffect(Unit) {
                     delay(3000)
+                    viewModel.clearInputFields()
                     onDismiss()
                 }
             }

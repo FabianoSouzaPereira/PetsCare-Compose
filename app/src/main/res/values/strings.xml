@@ -13,4 +13,7 @@
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="attempt_limit_reached">Attempt limit reached</string>
+    <string name="please_try_again_later_but_if_the_problem_persists_report_the_problem_to_your_service_provider">Please try again later; but if the problem persists, report the problem to your service provider.</string>
+    <string name="the_problem_reported_was">The problem reported was:\n%1$s</string>
+    <string name="something_wrong">Something wrong!!</string>
 </resources>
