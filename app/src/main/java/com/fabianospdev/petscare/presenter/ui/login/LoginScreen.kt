@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -32,6 +33,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -370,18 +372,23 @@ fun LoginScreen(
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = MaterialTheme.colorScheme.primary,
                                 contentColor = MaterialTheme.colorScheme.onPrimary,
-                                disabledContainerColor = Color.Unspecified,
-                                disabledContentColor = Color.Unspecified
+                                disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                                disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant
                             ),
                             modifier = Modifier
                                 .width(dimensionResource(R.dimen.button_width_medium))
                                 .padding(dimensionResource(R.dimen.button_padding))
                                 .clip(RoundedCornerShape(dimensionResource(R.dimen.button_rounded_corner_shape)))
-                                .background(gradient)
+                                .background(
+                                    brush = if (!isFormValid) Brush.verticalGradient(
+                                        listOf(
+                                            MaterialTheme.colorScheme.surfaceVariant,
+                                            MaterialTheme.colorScheme.surfaceVariant)) else gradient)
                                 .border(
                                     BorderStroke(
                                         width = dimensionResource(R.dimen.button_border_size),
-                                        color = MaterialTheme.colorScheme.onPrimary
+                                        color = if(!isFormValid) MaterialTheme.colorScheme.outlineVariant else
+                                            MaterialTheme.colorScheme.onPrimary
                                     ),
                                     shape = RoundedCornerShape(dimensionResource(R.dimen.button_rounded_corner_shape))
                                 ),
@@ -390,7 +397,8 @@ fun LoginScreen(
                             Text(
                                 text = context.getString(R.string.login),
                                 style = TextStyle(fontWeight = FontWeight.Bold),
-                                color = MaterialTheme.colorScheme.onPrimary
+                                color = if(!isFormValid) MaterialTheme.colorScheme.outline else
+                                    MaterialTheme.colorScheme.onPrimary
                             )
                         }
                     }
@@ -409,35 +417,37 @@ fun LoginScreen(
                 else -> LoginPresenterError.UnknownError.message
             }
 
-            ShowDialog(errorMessage, gradient) {
-                viewModel.resetState()
-            }
-            ClearInputFields(username, password)
-            ShowRetryButton(onRetry = {
-                viewModel.login(username.value, password.value)
-                }
+            ClearInputFields(username = username, password = password)
+            ShowRetryButton(
+                viewModel = viewModel,
+                errorMessage = errorMessage,
+                gradient = gradient,
+                onRetry = { viewModel.login(username.value, password.value) }
             )
         }
         is LoginState.NoConnection -> {
-            ShowToastMessage((state as LoginState.NoConnection).errorMessage)
-            ShowRetryButton(onRetry = {
-                viewModel.login(username.value, password.value)
-                }
+            ShowRetryButton(
+                viewModel = viewModel,
+                errorMessage = (state as LoginState.NoConnection).errorMessage,
+                gradient = gradient,
+                onRetry = {  viewModel.login(username.value, password.value) }
             )
         }
         is LoginState.TimeoutError -> {
-            ShowSnackBarMessage(snackbarHostState, (state as LoginState.TimeoutError).message)
-            ShowRetryButton(onRetry = {
-                viewModel.login(username.value, password.value)
-                }
+            ShowRetryButton(
+                viewModel = viewModel,
+                errorMessage = (state as LoginState.TimeoutError).message,
+                gradient = gradient,
+                onRetry = { viewModel.login(username.value, password.value) }
             )
         }
         is LoginState.Unauthorized -> {
             ShowSnackBarMessage(snackbarHostState, (state as LoginState.Unauthorized).message)
-            ClearInputFields(username, password)
-            ShowRetryButton(onRetry = {
-                viewModel.login(username.value, password.value)
-                }
+            ShowRetryButton(
+                viewModel = viewModel,
+                errorMessage = (state as LoginState.Unauthorized).message,
+                gradient = gradient,
+                onRetry = { viewModel.login(username.value, password.value) }
             )
         }
         is LoginState.ValidationError -> {
@@ -576,30 +586,128 @@ fun ClearInputFields(username: MutableState<String>, password: MutableState<Stri
 }
 
 @Composable
-fun ShowRetryButton(onRetry: () -> Unit) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Bottom
+fun ShowRetryButton(
+    viewModel: LoginViewModel,
+    errorMessage: String,
+    gradient: Brush,
+    onRetry: () -> Unit
+) {
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color =  MaterialTheme.colorScheme.onSurface,
+        tonalElevation = 5.dp
     ) {
-        Box(
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(120.dp)
+                .fillMaxSize()
+                .padding(16.dp)
+                .background(Color.Transparent),
+            verticalArrangement = Arrangement.Bottom
         ) {
-            Button(
-                onClick = onRetry,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .align(Alignment.BottomCenter)
-                    .padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 60.dp)
+            Box(
+                modifier = Modifier.fillMaxWidth()
+                    .fillMaxHeight(0.6f)
+                    .padding(16.dp)
             ) {
-                Text(stringResource(R.string.try_again))
+                OutlinedCard(
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.errorContainer,
+                    ),
+                    border = BorderStroke(2.dp, MaterialTheme.colorScheme.onTertiary),
+                    modifier = Modifier.fillMaxWidth().padding(16.dp),
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                    ) {
+                        Text(
+                            text = "Something wrong!!",
+                            fontSize = with(LocalDensity.current) {
+                                dimensionResource(id = R.dimen.title_font_text_size).value.sp
+                            },
+                            fontFamily = LoadFontsFamily.karlaFamily,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.tertiary,
+                            fontStyle = FontStyle.Normal,
+                            style = MaterialTheme.typography.titleSmall
+                        )
+                        Spacer(modifier = Modifier.height(20.dp))
+
+                        Text(text = errorMessage)
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        Text(text = "Break time")
+                        Spacer(modifier = Modifier.height(25.dp))
+                    }
+                }
+            }
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.CenterHorizontally)
+                    .height(80.dp)
+            ) {
+                Button(
+                    onClick = onRetry,
+                    modifier = Modifier
+                        .width(dimensionResource(R.dimen.button_width_medium))
+                        .align(Alignment.BottomCenter)
+                        .padding(start = 30.dp, top = 10.dp, end = 30.dp, bottom = 0.dp)
+                        .height(40.dp)
+                        .clip(RoundedCornerShape(dimensionResource(R.dimen.button_rounded_corner_shape)))
+                        .background(MaterialTheme.colorScheme.primary)
+                        .border(
+                            BorderStroke(
+                                width = dimensionResource(R.dimen.button_border_size),
+                                color = MaterialTheme.colorScheme.onPrimary
+                            ),
+                            shape = RoundedCornerShape(dimensionResource(R.dimen.button_rounded_corner_shape))
+                        ),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                ) {
+                    Text(
+                        text = stringResource(R.string.try_again),
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        fontWeight = FontWeight.Bold,
+                    )
+                }
+            }
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.CenterHorizontally)
+                    .height(80.dp)
+            ) {
+                Button(
+                    onClick = { viewModel.resetState() },
+                    modifier = Modifier
+                        .width(dimensionResource(R.dimen.button_width_medium))
+                        .align(Alignment.BottomCenter)
+                        .padding(start = 30.dp, top = 10.dp, end = 30.dp, bottom = 16.dp)
+                        .height(40.dp)
+                        .clip(RoundedCornerShape(dimensionResource(R.dimen.button_rounded_corner_shape)))
+                        .background(MaterialTheme.colorScheme.secondary)
+                        .border(
+                            BorderStroke(
+                                width = dimensionResource(R.dimen.button_border_size),
+                                color = MaterialTheme.colorScheme.onSecondary
+                            ),
+                            shape = RoundedCornerShape(dimensionResource(R.dimen.button_rounded_corner_shape))
+                        ),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
+                ) {
+                    Text(
+                        text = "Cancel",
+                        color = MaterialTheme.colorScheme.onSecondary,
+                        fontWeight = FontWeight.Bold,
+                    )
+                }
             }
         }
     }
 }
+
 
 @Composable
 fun ShowPopup(
