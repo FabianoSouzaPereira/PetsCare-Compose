@@ -677,6 +677,7 @@ fun ShowRetryButton(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(0.dp, 0.dp, 0.dp, 50.dp)
                     .align(Alignment.CenterHorizontally)
                     .height(80.dp)
             ) {
