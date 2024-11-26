@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "com.fabianospdev.petscare"
+    namespace = "com.example.petscompose_class"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.fabianospdev.petscare"
+        applicationId = "com.example.petscompose_class"
         minSdk = 28
         targetSdk = 34
         versionCode = 1
